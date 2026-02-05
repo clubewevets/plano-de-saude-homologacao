@@ -353,9 +353,9 @@ export const getHeroBannerVariant = async (): Promise<
       return cachedVariant as "control_50off" | "treatment_100off";
     }
 
-    console.log("📌 Cache vazio, aguardando 300ms para SDK carregar...");
-    // Aguardar um pouco para garantir que o SDK carregou
-    await new Promise((resolve) => setTimeout(resolve, 300));
+    console.log("📌 Cache vazio, aguardando 50ms para SDK carregar...");
+    // Delay mínimo para garantir que o SDK carregou
+    await new Promise((resolve) => setTimeout(resolve, 50));
 
     console.log("📌 Verificando Experiment SDK...");
     console.log(`   experiment existe? ${!!experiment}`);
