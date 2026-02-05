@@ -675,8 +675,7 @@ export default function Index() {
         <div
           className="hidden md:block md:relative md:w-screen md:overflow-hidden"
           style={{
-            backgroundColor:
-              heroBannerVariant === "treatment_100off" ? "#ffffff" : "#fbf7ef",
+            backgroundColor: "#fbf7ef",
             height: "636px",
             backgroundImage:
               heroBannerVariant === "treatment_100off"
