@@ -671,7 +671,12 @@ export default function Index() {
           }}
         >
           {/* Content Overlay */}
-          <div className="absolute inset-0 flex items-center">
+          <div
+            className="absolute inset-0 flex items-center"
+            style={{
+              display: bannerVariant === "on" ? "none" : "flex",
+            }}
+          >
             <div
               className="flex flex-col items-start gap-8"
               style={{
