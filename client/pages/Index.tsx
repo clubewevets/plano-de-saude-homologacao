@@ -592,7 +592,7 @@ export default function Index() {
               }}
             >
               <span data-teams="true" className="hero-title-first">
-                Seu amor
+                O amor pelo
               </span>
               <br />
               <span className="hero-title-second">seu pet é 24h</span>
