@@ -10,8 +10,8 @@ Este projeto está configurado para usar Feature Flags do Amplitude para realiza
 
 ### Variantes
 
-- **Control**: Exibe o banner padrão com fundo bege (#fbf7ef), conteúdo (título, badge, CTA) e imagem de fundo
-- **Variant**: Exibe um banner em branco (background branco, sem conteúdo visível)
+- **control_50off**: Exibe o banner padrão com fundo bege (#fbf7ef), conteúdo (título, badge, CTA) e imagem de fundo
+- **treatment_100off**: Exibe um banner em branco (background branco, sem conteúdo visível)
 
 ### Implementação
 
