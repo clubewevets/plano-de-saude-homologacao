@@ -98,16 +98,16 @@ export const useAmplitude = () => {
           );
 
           console.log("✅ Amplitude Experiment inicializado");
-          console.log("🔄 Pré-carregando feature flags em background...");
+          console.log("🔄 Carregando feature flags...");
 
-          // Pré-carregar feature flags em background (não bloqueia)
+          // Pré-carregar feature flags (com await para garantir carregamento)
           if (
             experiment &&
             typeof experiment.fetch === "function"
           ) {
-            // Não espera (não await), apenas inicia o carregamento
-            experiment.fetch().then(() => {
-              console.log("✅ Feature flags pré-carregadas em background");
+            try {
+              await experiment.fetch();
+              console.log("✅ Feature flags carregadas com sucesso");
 
               // Armazenar variante em cache assim que carregar
               const variant = experiment!.variant(
@@ -132,7 +132,9 @@ export const useAmplitude = () => {
                   );
                 }
               }
-            });
+            } catch (fetchError) {
+              console.warn("⚠️ Erro ao fazer fetch:", fetchError);
+            }
           }
         } catch (expError) {
           console.error(
