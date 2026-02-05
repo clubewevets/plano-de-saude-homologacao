@@ -843,7 +843,9 @@ export default function Index() {
                 lineHeight: "120%",
               }}
             >
-              50% OFF por 4 meses
+              {heroBannerVariant === "treatment_100off"
+                ? "2 meses grátis"
+                : "50% OFF por 4 meses"}
             </h3>
             <p
               className="text-white/80"
@@ -871,7 +873,9 @@ export default function Index() {
                 data-teams="true"
                 style={{ color: "rgba(255, 107, 192, 1)" }}
               >
-                CUIDAR50
+                {heroBannerVariant === "treatment_100off"
+                  ? "2MESESOFF"
+                  : "CUIDAR50"}
               </span>
             </div>
           </div>
