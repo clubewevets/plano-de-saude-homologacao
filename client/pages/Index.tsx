@@ -198,6 +198,13 @@ export default function Index() {
   }, []);
 
   useEffect(() => {
+    // Track hero banner view when variant is determined
+    if (heroBannerVariant) {
+      analyticsEvents.trackHeroBannerViewed(heroBannerVariant);
+    }
+  }, [heroBannerVariant]);
+
+  useEffect(() => {
     // Detect when to show/hide floating button based on visible sections
     // Hide when hero, promo, or planos sections are visible
     // Show when benefits section is visible
