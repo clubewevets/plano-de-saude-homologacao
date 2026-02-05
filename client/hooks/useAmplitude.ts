@@ -52,6 +52,9 @@ const generateDeviceId = (): string => {
 };
 
 let storedDeviceId: string | null = null;
+let variantCache: {
+  "teste-a-b-banner-50-100-off"?: string;
+} = {};
 
 export const useAmplitude = () => {
   useEffect(() => {
