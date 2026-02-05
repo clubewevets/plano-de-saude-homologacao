@@ -330,7 +330,7 @@ export const trackScreenView = (
   trackEvent("screen_view", screenViewProps);
 };
 
-// A/B Testing - Get variant from cache or Amplitude Experiment (sem delay)
+// A/B Testing - Get variant from Amplitude Experiment
 export const getHeroBannerVariant = async (): Promise<
   "control_50off" | "treatment_100off"
 > => {
@@ -353,7 +353,12 @@ export const getHeroBannerVariant = async (): Promise<
       return cachedVariant as "control_50off" | "treatment_100off";
     }
 
-    console.log("📌 Cache vazio, tentando obter do Experiment SDK...");
+    console.log("📌 Cache vazio, aguardando 300ms para SDK carregar...");
+    // Aguardar um pouco para garantir que o SDK carregou
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    console.log("📌 Verificando Experiment SDK...");
+    console.log(`   experiment existe? ${!!experiment}`);
 
     if (!experiment) {
       console.log("⚠️ Experiment SDK NÃO inicializado! Retornando control_50off");
@@ -365,7 +370,7 @@ export const getHeroBannerVariant = async (): Promise<
 
     let variant: any;
     try {
-      // Obter variante usando o Experiment SDK (sem delay - instantâneo)
+      // Obter variante usando o Experiment SDK
       variant = experiment.variant(featureFlagName);
       console.log(`✅ experiment.variant() retornou com sucesso`);
     } catch (variantError) {
