@@ -328,7 +328,7 @@ export const trackScreenView = (
   trackEvent("screen_view", screenViewProps);
 };
 
-// A/B Testing - Get variant from Amplitude Experiment
+// A/B Testing - Get variant from cache or Amplitude Experiment (sem delay)
 export const getHeroBannerVariant = async (): Promise<
   "control_50off" | "treatment_100off"
 > => {
@@ -340,47 +340,31 @@ export const getHeroBannerVariant = async (): Promise<
   }
 
   try {
-    console.log(
-      '🔄 Obtendo variante da feature flag "teste-a-b-banner-50-100-off"...'
-    );
+    const featureFlagName = "teste-a-b-banner-50-100-off";
+    console.log(`🔄 Obtendo variante da feature flag "${featureFlagName}"...`);
 
-    // Delay mínimo para garantir que o SDK carregou as feature flags
-    console.log("⏳ Aguardando carregamento (100ms)...");
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    // Primeiro, tentar obter do cache
+    const cachedVariant = variantCache[featureFlagName];
+    if (cachedVariant) {
+      console.log(`💾 Variante encontrada em cache: ${cachedVariant}`);
+      console.log("🔵 ===== getHeroBannerVariant() FIM (CACHE) =====\n");
+      return cachedVariant as "control_50off" | "treatment_100off";
+    }
 
-    console.log("📌 Verificando Experiment object:");
-    console.log(`   experiment existe? ${!!experiment}`);
-    console.log(`   experiment type: ${typeof experiment}`);
+    console.log("📌 Cache vazio, tentando obter do Experiment SDK...");
 
     if (!experiment) {
       console.log("⚠️ Experiment SDK NÃO inicializado! Retornando control_50off");
-      console.log("🔵 ===== getHeroBannerVariant() FIM (ERROR) =====\n");
+      console.log("🔵 ===== getHeroBannerVariant() FIM (SEM SDK) =====\n");
       return "control_50off";
     }
 
-    console.log("✅ Experiment SDK está inicializado");
-
-    // Tentar fazer fetch das variantes se ainda não foi feito
-    if (
-      experiment &&
-      typeof experiment.fetch === "function"
-    ) {
-      console.log("🔄 Tentando fazer fetch das feature flags...");
-      try {
-        await experiment.fetch();
-        console.log("✅ Feature flags carregadas");
-      } catch (fetchError) {
-        console.warn("⚠️ Erro ao fazer fetch das variantes:", fetchError);
-      }
-    }
-
-    console.log("📌 Chamando experiment.variant()...");
-    console.log(`📌 Feature flag name: "teste-a-b-banner-50-100-off"`);
+    console.log("✅ Experiment SDK disponível");
 
     let variant: any;
     try {
-      // Obter variante usando o Experiment SDK
-      variant = experiment.variant("teste-a-b-banner-50-100-off");
+      // Obter variante usando o Experiment SDK (sem delay - instantâneo)
+      variant = experiment.variant(featureFlagName);
       console.log(`✅ experiment.variant() retornou com sucesso`);
     } catch (variantError) {
       console.error("❌ Erro ao chamar experiment.variant():", variantError);
@@ -388,9 +372,8 @@ export const getHeroBannerVariant = async (): Promise<
       return "control_50off";
     }
 
-    console.log(`🎯 A/B Test - Variante obtida do Amplitude Experiment:`);
+    console.log(`🎯 A/B Test - Variante obtida:`);
     console.log(`   Raw variant: ${JSON.stringify(variant)}`);
-    console.log(`   Tipo: ${typeof variant}`);
 
     // Se for um objeto, pega a key
     let variantName: any = variant;
@@ -417,6 +400,9 @@ export const getHeroBannerVariant = async (): Promise<
       return "control_50off";
     }
 
+    // Armazenar em cache para próximas chamadas
+    variantCache[featureFlagName] = variantName;
+    console.log(`💾 Variante armazenada em cache: ${variantName}`);
     console.log(`✅ Variante validada: ${variantName}`);
     console.log("🔵 ===== getHeroBannerVariant() FIM (SUCESSO) =====\n");
     return variantName as "control_50off" | "treatment_100off";
