@@ -51,10 +51,12 @@ let storedDeviceId: string | null = null;
 
 export const useAmplitude = () => {
   useEffect(() => {
-    console.log("🟡 useAmplitude hook iniciado");
+    console.log("\n🟡 ===== useAmplitude HOOK INICIADO =====");
+    console.log(`🔑 AMPLITUDE_API_KEY: ${AMPLITUDE_API_KEY || "NÃO CONFIGURADA"}`);
 
     if (!AMPLITUDE_API_KEY) {
       console.warn("❌ AMPLITUDE_API_KEY não configurada");
+      console.log("🟡 ===== useAmplitude FIM (SEM API KEY) =====\n");
       return;
     }
 
