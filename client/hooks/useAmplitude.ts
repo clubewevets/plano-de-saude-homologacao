@@ -315,10 +315,6 @@ export const getHeroBannerVariant = async (): Promise<
       '🔄 Obtendo variante da feature flag "teste-a-b-banner-50-100-off"...'
     );
 
-    // Adicionar pequeno delay para garantir que o Experiment SDK carregou
-    console.log("⏳ Aguardando Experiment SDK carregar (500ms)...");
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
     console.log("📌 Verificando Experiment object:");
     console.log(`   experiment existe? ${!!experiment}`);
     console.log(`   experiment type: ${typeof experiment}`);
