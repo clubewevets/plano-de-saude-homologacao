@@ -552,13 +552,13 @@ export default function Index() {
       <section
         id="inicio"
         className={`md:hidden flex flex-col ${
-          bannerVariant === "treatment_100off" ? "bg-white" : "bg-[#FBF7EF]"
+          bannerVariant === "variant_b" ? "bg-white" : "bg-[#FBF7EF]"
         }`}
       >
         <div
           className="px-4 py-8 flex flex-col items-center gap-4 max-w-[345px] mx-auto w-full"
           style={{
-            display: bannerVariant === "treatment_100off" ? "none" : "flex",
+            display: bannerVariant === "variant_b" ? "none" : "flex",
           }}
         >
           {/* Badge */}
@@ -671,10 +671,10 @@ export default function Index() {
         <div
           className="hidden md:block md:relative md:w-screen md:overflow-hidden"
           style={{
-            backgroundColor: bannerVariant === "treatment_100off" ? "#ffffff" : "#fbf7ef",
+            backgroundColor: bannerVariant === "variant_b" ? "#ffffff" : "#fbf7ef",
             height: "636px",
             backgroundImage:
-              bannerVariant === "treatment_100off"
+              bannerVariant === "variant_b"
                 ? "none"
                 : "url(https://cdn.builder.io/api/v1/image/assets%2Fad3b24e0eebc41a888274aae2381ca13%2Fed88029a87dc48d7bcd69c24d114125d?format=webp&width=1600&height=2400)",
             backgroundSize: "auto 100%",
@@ -686,7 +686,7 @@ export default function Index() {
           <div
             className="absolute inset-0 flex items-center"
             style={{
-              display: bannerVariant === "treatment_100off" ? "none" : "flex",
+              display: bannerVariant === "variant_b" ? "none" : "flex",
             }}
           >
             <div
