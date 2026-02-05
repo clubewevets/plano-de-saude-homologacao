@@ -284,16 +284,33 @@ export const getHeroBannerVariant = async (): Promise<
       '🔄 Obtendo variante da feature flag "teste-a-b-banner-50-100-off"...'
     );
 
+    // Adicionar pequeno delay para garantir que o Amplitude carregou as feature flags
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    console.log("📌 Amplitude object:", amplitude);
+    console.log("📌 amplitude.getVariant:", amplitude.getVariant);
+
     // Get variant from Amplitude feature flag
     const variant = amplitude.getVariant("teste-a-b-banner-50-100-off");
 
     console.log(`🎯 A/B Test - Variante obtida do Amplitude:`);
     console.log(`   Variant: ${variant}`);
+    console.log(`   Tipo: ${typeof variant}`);
+    console.log(`   É control_50off? ${variant === "control_50off"}`);
+    console.log(`   É treatment_100off? ${variant === "treatment_100off"}`);
+
+    // If variant is null or undefined, default to control_50off
+    if (!variant) {
+      console.log(
+        `⚠️ Variante nula/undefined, usando control_50off como padrão`
+      );
+      return "control_50off";
+    }
 
     // If variant is not one of our expected variants, default to control_50off
     if (variant !== "control_50off" && variant !== "treatment_100off") {
       console.log(
-        `⚠️ Variante inesperada: ${variant}, usando control_50off como padrão`
+        `⚠️ Variante inesperada: "${variant}", usando control_50off como padrão`
       );
       return "control_50off";
     }
