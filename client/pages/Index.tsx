@@ -29,6 +29,10 @@ export default function Index() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showFloatingButton, setShowFloatingButton] = useState(false);
 
+  // Feature flag for banner A/B test
+  const { variant: bannerVariant, loading: bannerVariantLoading } =
+    useExperimentVariant("teste-a-b-banner-50-100-off");
+
   const handleBillingPeriodChange = (period: "mensal" | "anual") => {
     setBillingPeriod(period);
   };
