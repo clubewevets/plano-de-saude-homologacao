@@ -29,16 +29,15 @@ export default function Index() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showFloatingButton, setShowFloatingButton] = useState(false);
 
-  // Feature flag for banner A/B test
-  const { variant: bannerVariant, loading: bannerVariantLoading } =
-    useExperimentVariant("teste-a-b-banner-50-100-off");
+  // Feature flag for banner A/B test - will be created in Amplitude
+  const { variant: bannerVariant, isLoading: bannerVariantLoading } =
+    useFeatureFlag("banner-test");
 
   // Debug banner variant
   useEffect(() => {
-    console.log("🎯 Banner Variant Status:");
+    console.log("🎯 Banner Variant:");
     console.log(`  - Loading: ${bannerVariantLoading}`);
     console.log(`  - Variant: ${bannerVariant}`);
-    console.log(`  - Banner visível: ${bannerVariant !== "treatment_100off"}`);
   }, [bannerVariant, bannerVariantLoading]);
 
   const handleBillingPeriodChange = (period: "mensal" | "anual") => {
