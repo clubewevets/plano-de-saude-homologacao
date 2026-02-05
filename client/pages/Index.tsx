@@ -169,6 +169,13 @@ export default function Index() {
   });
 
   useEffect(() => {
+    // A/B Test: Determine hero banner variant
+    const variant = getHeroBannerVariant();
+    setHeroBannerVariant(variant);
+    trackHeroBannerVariant(variant);
+  }, []);
+
+  useEffect(() => {
     // Track Facebook Pixel ViewContent event
     if (typeof fbq !== "undefined") {
       fbq("track", "ViewContent", {
