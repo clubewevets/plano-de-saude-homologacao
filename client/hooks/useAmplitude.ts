@@ -343,80 +343,45 @@ export const getHeroBannerVariant = async (): Promise<
 
   try {
     const featureFlagName = "teste-a-b-banner-50-100-off";
-    console.log(`🔄 Obtendo variante da feature flag "${featureFlagName}"...`);
 
     // Primeiro, tentar obter do cache
     const cachedVariant = variantCache[featureFlagName];
     if (cachedVariant) {
-      console.log(`💾 Variante encontrada em cache: ${cachedVariant}`);
-      console.log("🔵 ===== getHeroBannerVariant() FIM (CACHE) =====\n");
       return cachedVariant as "control_50off" | "treatment_100off";
     }
 
-    console.log("📌 Cache vazio, aguardando 50ms para SDK carregar...");
     // Delay mínimo para garantir que o SDK carregou
     await new Promise((resolve) => setTimeout(resolve, 50));
 
-    console.log("📌 Verificando Experiment SDK...");
-    console.log(`   experiment existe? ${!!experiment}`);
-
     if (!experiment) {
-      console.log("⚠️ Experiment SDK NÃO inicializado! Retornando control_50off");
-      console.log("🔵 ===== getHeroBannerVariant() FIM (SEM SDK) =====\n");
       return "control_50off";
     }
-
-    console.log("✅ Experiment SDK disponível");
 
     let variant: any;
     try {
-      // Obter variante usando o Experiment SDK
       variant = experiment.variant(featureFlagName);
-      console.log(`✅ experiment.variant() retornou com sucesso`);
     } catch (variantError) {
-      console.error("❌ Erro ao chamar experiment.variant():", variantError);
-      console.log("🔵 ===== getHeroBannerVariant() FIM (VARIANT ERROR) =====\n");
       return "control_50off";
     }
-
-    console.log(`🎯 A/B Test - Variante obtida:`);
-    console.log(`   Raw variant: ${JSON.stringify(variant)}`);
 
     // Se for um objeto, pega a key
     let variantName: any = variant;
     if (variant && typeof variant === "object" && variant.key) {
       variantName = variant.key;
-      console.log(`   Variante extraída de objeto.key: ${variantName}`);
     }
 
-    // If variant is null or undefined, default to control_50off
-    if (!variantName) {
-      console.log(
-        `⚠️ Variante nula/undefined, usando control_50off como padrão`
-      );
-      console.log("🔵 ===== getHeroBannerVariant() FIM (NULL) =====\n");
+    // Validar variante
+    if (
+      variantName !== "control_50off" &&
+      variantName !== "treatment_100off"
+    ) {
       return "control_50off";
     }
 
-    // If variant is not one of our expected variants, default to control_50off
-    if (variantName !== "control_50off" && variantName !== "treatment_100off") {
-      console.log(
-        `⚠️ Variante inesperada: "${variantName}", usando control_50off como padrão`
-      );
-      console.log("🔵 ===== getHeroBannerVariant() FIM (INESPERADA) =====\n");
-      return "control_50off";
-    }
-
-    // Armazenar em cache para próximas chamadas
+    // Armazenar em cache
     variantCache[featureFlagName] = variantName;
-    console.log(`💾 Variante armazenada em cache: ${variantName}`);
-    console.log(`✅ Variante validada: ${variantName}`);
-    console.log("🔵 ===== getHeroBannerVariant() FIM (SUCESSO) =====\n");
     return variantName as "control_50off" | "treatment_100off";
   } catch (error) {
-    console.error("❌ Erro ao obter variante:", error);
-    console.log("⚠️ Retornando control_50off como padrão");
-    console.log("🔵 ===== getHeroBannerVariant() FIM (EXCEÇÃO) =====\n");
     return "control_50off";
   }
 };
