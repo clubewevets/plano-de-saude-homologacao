@@ -64,13 +64,15 @@ const initializeExperimentClient = async () => {
     for (let i = 0; i < maxRetries; i++) {
       try {
         console.log(`🔄 Tentativa ${i + 1}/${maxRetries} de fazer fetch...`);
-        await experimentClient.fetch({
+        const fetchResult = await experimentClient.fetch({
           user: {
             user_id: userId || "anonymous",
             device_id: deviceId || undefined,
           },
         });
         console.log("✅ Fetch realizado com sucesso!");
+        console.log("📋 Fetch result:", fetchResult);
+        console.log("🚩 Flags após fetch:", experimentClient.flags);
         break;
       } catch (error) {
         lastError = error as Error;
