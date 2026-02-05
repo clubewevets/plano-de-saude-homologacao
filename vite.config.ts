@@ -62,7 +62,7 @@ export default defineConfig(({ mode }) => ({
     },
   },
   plugins: [react(), deferCssPlugin(), expressPlugin()],
-  base: "/plano-de-saude-pet/",
+
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./client"),
