@@ -52,13 +52,13 @@ A implementação está no arquivo `client/pages/Index.tsx`:
 ### 3. Criar as Variantes
 
 1. **Control Variant**:
-   - Name: `control`
-   - Value: `control` (ou deixar vazio)
+   - Name: `control_50off`
+   - Value: `control_50off`
    - Descrição: Show standard banner with background and content
 
 2. **Variant (Test)**:
-   - Name: `on`
-   - Value: `on`
+   - Name: `treatment_100off`
+   - Value: `treatment_100off`
    - Descrição: Show blank white banner without content
 
 ### 4. Definir Targeting
