@@ -258,8 +258,6 @@ export const trackScreenView = (
     ...additionalProps,
   };
 
-  console.log("📊 trackScreenView - Informações Coletadas:", screenViewProps);
-
   trackEvent("screen_view", screenViewProps);
 };
 
