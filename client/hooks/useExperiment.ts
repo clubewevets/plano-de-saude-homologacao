@@ -23,18 +23,28 @@ const initializeExperimentClient = async () => {
   }
 
   try {
+    console.log("🔄 Inicializando Experiment client...");
+    console.log("📍 API Key:", AMPLITUDE_API_KEY.substring(0, 10) + "...");
+
     experimentClient = Experiment.initialize(AMPLITUDE_API_KEY, {
       exposureTrackingProvider: amplitude,
     });
 
+    const userId = amplitude.getUserId();
+    const deviceId = amplitude.getDeviceId();
+
+    console.log("📍 User ID:", userId);
+    console.log("📍 Device ID:", deviceId);
+
     await experimentClient.fetch({
       user: {
-        user_id: amplitude.getUserId() || "anonymous",
-        device_id: amplitude.getDeviceId() || undefined,
+        user_id: userId || "anonymous",
+        device_id: deviceId || undefined,
       },
     });
 
     console.log("✅ Experiment client inicializado com sucesso!");
+    console.log("📍 Experiment client flags:", experimentClient.flags);
     return experimentClient;
   } catch (error) {
     console.error("❌ Erro ao inicializar Experiment client:", error);
