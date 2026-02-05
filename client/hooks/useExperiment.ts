@@ -6,6 +6,7 @@ import {
 } from "@amplitude/experiment-js-client";
 
 const AMPLITUDE_API_KEY = import.meta.env.VITE_AMPLITUDE_API_KEY;
+const AMPLITUDE_EXPERIMENT_KEY = import.meta.env.VITE_AMPLITUDE_EXPERIMENT_KEY;
 
 let experimentClient: ExperimentClient | null = null;
 
