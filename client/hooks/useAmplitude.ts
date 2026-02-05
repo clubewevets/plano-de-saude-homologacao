@@ -88,12 +88,30 @@ export const useAmplitude = () => {
 
         // Inicializar Amplitude Experiment
         console.log("🔄 Inicializando Amplitude Experiment...");
-        experiment = Experiment.initialize(
-          AMPLITUDE_DEPLOYMENT_KEY,
-          storedDeviceId
-        );
+        try {
+          experiment = Experiment.initialize(
+            AMPLITUDE_DEPLOYMENT_KEY,
+            storedDeviceId
+          );
 
-        console.log("✅ Amplitude Experiment inicializado");
+          console.log("✅ Amplitude Experiment inicializado");
+          console.log("🔄 Carregando feature flags...");
+
+          // Aguardar carregamento das feature flags
+          if (
+            experiment &&
+            typeof experiment.fetch === "function"
+          ) {
+            await experiment.fetch();
+            console.log("✅ Feature flags carregadas com sucesso");
+          }
+        } catch (expError) {
+          console.error(
+            "⚠️ Erro ao inicializar Amplitude Experiment:",
+            expError
+          );
+          console.log("   Continuando sem feature flags do Experiment");
+        }
 
         // Configurar custom path como propriedade do usuário via um evento especial
         // Usando track com uma propriedade que será associada ao usuário
