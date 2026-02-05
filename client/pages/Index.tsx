@@ -566,7 +566,7 @@ export default function Index() {
               }}
             >
               <span data-teams="true" className="hero-title-first">
-                Apenas amor
+                O amor pelo
               </span>
               <br />
               <span className="hero-title-second">seu pet é 24h</span>
@@ -697,9 +697,9 @@ export default function Index() {
                     color: "#055391",
                   }}
                 >
-                  <span data-teams="true">Apenas amor</span>
+                  <span data-teams="true">O amor pelo</span>
                   <br />
-                  seu pet 24h
+                  seu pet é 24h
                 </h1>
               </div>
               <p
