@@ -43,9 +43,6 @@ const generateDeviceId = (): string => {
     // Gerar novo Device ID se não existir
     deviceId = `device_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     localStorage.setItem(storageKey, deviceId);
-    console.log("✨ Novo Device ID gerado:", deviceId);
-  } else {
-    console.log("♻️ Device ID recuperado do localStorage:", deviceId);
   }
 
   return deviceId;
