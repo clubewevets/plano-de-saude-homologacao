@@ -170,12 +170,15 @@ export const useExperimentVariant = (
 
         // Get the variant for the feature flag
         console.log(`🔍 Buscando variante para flag: "${flagKey}"`);
+        const allFlags = client.flags || {};
+        console.log(`📊 Todas as flags disponíveis:`, Object.keys(allFlags));
+
         const variantObj = client.variant(flagKey);
         const variantValue = variantObj?.value || "control";
 
         console.log(`📊 Variant para "${flagKey}": ${variantValue}`);
         console.log(`📊 Variant objeto completo:`, variantObj);
-        console.log(`📊 Todas as flags do client:`, client.flags);
+        console.log(`📊 Raw flag object:`, allFlags[flagKey]);
 
         if (!variantObj || !variantObj.value) {
           console.warn(
@@ -184,6 +187,12 @@ export const useExperimentVariant = (
           console.warn(
             `⚠️ Verifique se a feature flag foi criada no Amplitude e está ativa`
           );
+
+          // Log detalhado de debug
+          console.debug("🐛 Debug Info:");
+          console.debug("  - Flags count:", Object.keys(allFlags).length);
+          console.debug("  - Flag keys:", Object.keys(allFlags));
+          console.debug("  - Procurando por:", flagKey);
         }
 
         setVariant(variantValue);
