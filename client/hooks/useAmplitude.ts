@@ -99,7 +99,9 @@ export const useAmplitude = () => {
       }
     };
 
+    console.log("🔄 Chamando initAmplitude()...");
     initAmplitude();
+    console.log("🟡 ===== useAmplitude FIM =====\n");
   }, []);
 };
 
