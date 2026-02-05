@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
 import * as amplitude from "@amplitude/analytics-browser";
-import {
-  Experiment,
-  ExperimentClient,
-} from "@amplitude/experiment-js-client";
+import { Experiment } from "@amplitude/experiment-js-client";
 
 const AMPLITUDE_EXPERIMENT_KEY = import.meta.env.VITE_AMPLITUDE_EXPERIMENT_KEY;
 
-let experimentClient: ExperimentClient | null = null;
+let experimentClient: any = null;
 
 /**
  * Simple hook to get a feature flag variant
@@ -32,9 +29,7 @@ export const useFeatureFlag = (
         // Initialize experiment client
         if (!experimentClient) {
           console.log("🔄 Inicializando Experiment Client...");
-          experimentClient = Experiment.initialize(AMPLITUDE_EXPERIMENT_KEY, {
-            exposureTrackingProvider: amplitude,
-          });
+          experimentClient = Experiment.initialize(AMPLITUDE_EXPERIMENT_KEY);
         }
 
         // Wait a bit for Amplitude to be ready
@@ -42,11 +37,15 @@ export const useFeatureFlag = (
 
         // Fetch variants
         console.log("🔄 Buscando variants do Amplitude...");
+        const deviceId = amplitude.getDeviceId();
+        const userId = amplitude.getUserId();
+
+        console.log("📍 Device ID:", deviceId);
+        console.log("📍 User ID:", userId);
+
         await experimentClient.fetch({
-          user: {
-            device_id: amplitude.getDeviceId() || "anonymous",
-            user_id: amplitude.getUserId() || undefined,
-          },
+          device_id: deviceId || "anonymous",
+          user_id: userId || undefined,
         });
 
         // Get the variant
@@ -54,6 +53,8 @@ export const useFeatureFlag = (
         const variantValue = variantResult?.value || "control";
 
         console.log(`✅ Flag "${flagKey}" recebeu variant: ${variantValue}`);
+        console.log(`📊 Variant objeto completo:`, variantResult);
+        
         setVariant(variantValue);
       } catch (error) {
         console.error(`❌ Erro ao buscar variant:`, error);
