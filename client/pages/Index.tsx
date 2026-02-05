@@ -171,20 +171,16 @@ export default function Index() {
 
   useEffect(() => {
     // A/B Test: Determine hero banner variant from Amplitude feature flag
-    console.log("🟢 Index.tsx - useEffect A/B Test iniciado");
-
     const initVariant = async () => {
       try {
         const variant = await getHeroBannerVariant();
-        console.log(`🟢 Index.tsx - Variante obtida: ${variant}`);
-        setHeroBannerVariant(variant);
-        console.log(`🟢 Index.tsx - Estado atualizado com variante: ${variant}`);
+        // Só atualiza se for diferente do padrão para evitar re-render desnecessário
+        if (variant !== "control_50off") {
+          setHeroBannerVariant(variant);
+        }
         trackHeroBannerVariant(variant);
-        console.log(
-          `🟢 Index.tsx - Rastreamento iniciado para variante: ${variant}`
-        );
       } catch (error) {
-        console.error("🟢 Index.tsx - Erro ao obter variante:", error);
+        console.error("Erro ao obter variante:", error);
       }
     };
 
