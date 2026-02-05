@@ -246,3 +246,44 @@ export const trackScreenView = (
 
   trackEvent("screen_view", screenViewProps);
 };
+
+// A/B Testing - Get variant for feature flag test
+export const getHeroBannerVariant = (): "control_50off" | "treatment_100off" => {
+  if (typeof window === "undefined") {
+    return "control_50off";
+  }
+
+  const deviceId = getDeviceId();
+  if (!deviceId) {
+    return "control_50off";
+  }
+
+  // Use device ID hash to determine variant (consistent across sessions)
+  const hash = deviceId
+    .split("")
+    .reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const variantIndex = hash % 2;
+
+  const variant =
+    variantIndex === 0 ? "control_50off" : "treatment_100off";
+
+  console.log(
+    `🎯 A/B Test - Hero Banner: ${variant} (Device ID: ${deviceId})`,
+  );
+
+  return variant;
+};
+
+// Track when user is exposed to variant
+export const trackHeroBannerVariant = (variant: string) => {
+  trackEvent("hero_banner_variant_exposure", {
+    experiment_name: "hero_banner_ab_test",
+    variant_name: variant,
+    variant_type:
+      variant === "treatment_100off"
+        ? "blank_hero"
+        : "hero_with_content",
+  });
+
+  console.log(`📊 Hero Banner variant tracked: ${variant}`);
+};
