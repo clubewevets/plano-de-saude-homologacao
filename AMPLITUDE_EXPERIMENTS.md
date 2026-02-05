@@ -126,12 +126,16 @@ VITE_AMPLITUDE_API_KEY=0dd761abeb204ed66f808d27daae4c3
 
 ## Debugging
 
-No console do navegador, você verá mensagens como:
+No console do navegador (F12 → Console), você verá mensagens como:
 
 ```
 ✅ Experiment client inicializado com sucesso!
-📊 Variant para "teste-a-b-banner-50-100-off": control
+📊 Variant para "teste-a-b-banner-50-100-off": treatment_100off
+📊 Variant objeto completo: {value: "treatment_100off", payload: {...}}
 ```
+
+Se ver `control_50off`, significa que o usuário foi atribuído ao grupo de controle (banner normal).
+Se ver `treatment_100off`, significa que o usuário vê o banner em branco (teste).
 
 Se não estiver funcionando, verifique:
 - [ ] API Key está configurada em `.env.local`
