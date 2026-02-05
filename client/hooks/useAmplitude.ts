@@ -249,12 +249,18 @@ export const trackScreenView = (
 
 // A/B Testing - Get variant for feature flag test
 export const getHeroBannerVariant = (): "control_50off" | "treatment_100off" => {
+  console.log("🔵 getHeroBannerVariant() chamado");
+
   if (typeof window === "undefined") {
+    console.log("⚠️ SSR environment detected, retornando control_50off");
     return "control_50off";
   }
 
   const deviceId = getDeviceId();
+  console.log(`📱 Device ID obtido: ${deviceId}`);
+
   if (!deviceId) {
+    console.log("⚠️ Device ID não encontrado, retornando control_50off");
     return "control_50off";
   }
 
@@ -267,23 +273,31 @@ export const getHeroBannerVariant = (): "control_50off" | "treatment_100off" => 
   const variant =
     variantIndex === 0 ? "control_50off" : "treatment_100off";
 
-  console.log(
-    `🎯 A/B Test - Hero Banner: ${variant} (Device ID: ${deviceId})`,
-  );
+  console.log(`🎯 A/B Test - Hero Banner Variant Determinada:`);
+  console.log(`   Variant: ${variant}`);
+  console.log(`   Device ID: ${deviceId}`);
+  console.log(`   Hash: ${hash}`);
+  console.log(`   Variant Index: ${variantIndex}`);
 
   return variant;
 };
 
 // Track when user is exposed to variant
 export const trackHeroBannerVariant = (variant: string) => {
-  trackEvent("hero_banner_variant_exposure", {
+  console.log(`🟡 trackHeroBannerVariant() chamado com variant: ${variant}`);
+
+  const eventData = {
     experiment_name: "hero_banner_ab_test",
     variant_name: variant,
     variant_type:
       variant === "treatment_100off"
         ? "blank_hero"
         : "hero_with_content",
-  });
+  };
 
-  console.log(`📊 Hero Banner variant tracked: ${variant}`);
+  console.log("📊 Enviando evento com dados:", eventData);
+
+  trackEvent("hero_banner_variant_exposure", eventData);
+
+  console.log(`✅ Evento rastreado com sucesso: hero_banner_variant_exposure`);
 };
