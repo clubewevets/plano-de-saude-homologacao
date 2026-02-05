@@ -699,7 +699,7 @@ export default function Index() {
                 >
                   <span data-teams="true">O amor pelo</span>
                   <br />
-                  seu pet é 24h
+                  seu pet 24h
                 </h1>
               </div>
               <p
