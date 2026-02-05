@@ -306,12 +306,14 @@ export const getHeroBannerVariant = async (): Promise<
   }
 };
 
-// Track when user is exposed to variant
+// Track when user is exposed to variant from feature flag
 export const trackHeroBannerVariant = (variant: string) => {
-  console.log(`🟡 trackHeroBannerVariant() chamado com variant: ${variant}`);
+  console.log(
+    `🟡 trackHeroBannerVariant() chamado com variant: ${variant}`
+  );
 
   const eventData = {
-    experiment_name: "hero_banner_ab_test",
+    feature_flag_name: "teste-a-b-banner-50-100-off",
     variant_name: variant,
     variant_type:
       variant === "treatment_100off"
@@ -323,5 +325,7 @@ export const trackHeroBannerVariant = (variant: string) => {
 
   trackEvent("hero_banner_variant_exposure", eventData);
 
-  console.log(`✅ Evento rastreado com sucesso: hero_banner_variant_exposure`);
+  console.log(
+    `✅ Evento rastreado com sucesso: hero_banner_variant_exposure`
+  );
 };
