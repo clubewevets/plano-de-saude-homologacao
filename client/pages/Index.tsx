@@ -191,9 +191,9 @@ export default function Index() {
     // A/B Test: Determine hero banner variant
     const variant = getExperimentVariant("hero_banner_test", [
       "control_50off",
-      "control_white",
+      "treatment_100off",
     ]);
-    setHeroBannerVariant(variant as "control_50off" | "control_white");
+    setHeroBannerVariant(variant as "control_50off" | "treatment_100off");
     trackVariantExposure("hero_banner_test", variant);
   }, []);
 
