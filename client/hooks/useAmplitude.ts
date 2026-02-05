@@ -120,26 +120,15 @@ export const useAmplitude = () => {
           // Silencioso se falhar
         }
 
-        // Configurar custom path como propriedade do usuário via um evento especial
-        // Usando track com uma propriedade que será associada ao usuário
-        console.log("🔄 Rastreando user_properties...");
         amplitude.track("user_properties", {
           custom_path: "/landing-page/plano",
         });
-
-        console.log("✅ Amplitude inicializado com sucesso!");
-        console.log("📍 Device ID em uso:", storedDeviceId);
-        console.log("🛣️ Custom path configurado: /landing-page/plano");
-        console.log("🟣 ===== AMPLITUDE INICIALIZADO COM SUCESSO =====\n");
       } catch (error) {
-        console.error("❌ Erro na inicialização do Amplitude:", error);
-        console.log("🟣 ===== ERRO NA INICIALIZAÇÃO =====\n");
+        console.error("Erro ao inicializar Amplitude:", error);
       }
     };
 
-    console.log("🔄 Chamando initAmplitude()...");
     initAmplitude();
-    console.log("🟡 ===== useAmplitude FIM =====\n");
   }, []);
 };
 
