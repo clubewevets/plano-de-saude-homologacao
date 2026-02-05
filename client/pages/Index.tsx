@@ -170,9 +170,13 @@ export default function Index() {
 
   useEffect(() => {
     // A/B Test: Determine hero banner variant
+    console.log("🟢 Index.tsx - useEffect A/B Test iniciado");
     const variant = getHeroBannerVariant();
+    console.log(`🟢 Index.tsx - Variante obtida: ${variant}`);
     setHeroBannerVariant(variant);
+    console.log(`🟢 Index.tsx - Estado atualizado com variante: ${variant}`);
     trackHeroBannerVariant(variant);
+    console.log(`🟢 Index.tsx - Rastreamento iniciado para variante: ${variant}`);
   }, []);
 
   useEffect(() => {
