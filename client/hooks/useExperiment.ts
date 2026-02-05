@@ -130,6 +130,7 @@ export const useExperimentVariant = (
         const variantValue = variantObj?.value || "control";
 
         console.log(`📊 Variant para "${flagKey}": ${variantValue}`);
+        console.log(`📊 Variant objeto completo:`, variantObj);
         setVariant(variantValue);
       } catch (error) {
         console.error(
