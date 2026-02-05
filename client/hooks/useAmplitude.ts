@@ -58,27 +58,17 @@ let variantCache: {
 
 export const useAmplitude = () => {
   useEffect(() => {
-    console.log("\n🟡 ===== useAmplitude HOOK INICIADO =====");
-    console.log(`🔑 AMPLITUDE_API_KEY: ${AMPLITUDE_API_KEY || "NÃO CONFIGURADA"}`);
-
     if (!AMPLITUDE_API_KEY) {
-      console.warn("❌ AMPLITUDE_API_KEY não configurada");
-      console.log("🟡 ===== useAmplitude FIM (SEM API KEY) =====\n");
       return;
     }
 
     const initAmplitude = async () => {
       try {
-        console.log("\n🟣 ===== INICIALIZANDO AMPLITUDE =====");
-        console.log(`🔑 API Key: ${AMPLITUDE_API_KEY}`);
-
         // Gerar ou recuperar Device ID
         storedDeviceId = generateDeviceId();
-        console.log(`📱 Device ID gerado/recuperado: ${storedDeviceId}`);
 
-        console.log("🔄 Chamando amplitude.init()...");
         await amplitude.init(AMPLITUDE_API_KEY, {
-          deviceId: storedDeviceId, // Usar o Device ID gerado
+          deviceId: storedDeviceId,
           defaultTracking: {
             pageViews: false,
             formInteractions: true,
@@ -86,8 +76,6 @@ export const useAmplitude = () => {
           },
           sessionReplayTracking: false,
         });
-
-        console.log("✅ amplitude.init() completado");
 
         // Inicializar Amplitude Experiment
         try {
