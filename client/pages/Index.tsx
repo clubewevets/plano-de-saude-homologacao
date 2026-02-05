@@ -187,23 +187,6 @@ export default function Index() {
   }, []);
 
   useEffect(() => {
-    // A/B Test: Determine hero banner variant
-    const variant = getExperimentVariant("hero_banner_test", [
-      "control_50off",
-      "treatment_100off",
-    ]);
-    setHeroBannerVariant(variant as "control_50off" | "treatment_100off");
-    trackVariantExposure("hero_banner_test", variant);
-  }, []);
-
-  useEffect(() => {
-    // Track hero banner view when variant is determined
-    if (heroBannerVariant) {
-      analyticsEvents.trackHeroBannerViewed(heroBannerVariant);
-    }
-  }, [heroBannerVariant]);
-
-  useEffect(() => {
     // Detect when to show/hide floating button based on visible sections
     // Hide when hero, promo, or planos sections are visible
     // Show when benefits section is visible
