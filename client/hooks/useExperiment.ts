@@ -194,7 +194,13 @@ export const useExperimentVariant = (
         // Get the variant for the feature flag
         console.log(`🔍 Buscando variante para flag: "${flagKey}"`);
         const allFlags = client.flags || {};
-        console.log(`📊 Todas as flags disponíveis:`, Object.keys(allFlags));
+        const flagKeys = Object.keys(allFlags);
+
+        console.log(`📊 Todas as flags disponíveis:`, flagKeys);
+        console.log(`📊 Listando cada flag disponível:`);
+        flagKeys.forEach((key) => {
+          console.log(`  - "${key}":`, allFlags[key]);
+        });
 
         const variantObj = client.variant(flagKey);
         const variantValue = variantObj?.value || "control";
@@ -212,10 +218,15 @@ export const useExperimentVariant = (
           );
 
           // Log detalhado de debug
-          console.debug("🐛 Debug Info:");
-          console.debug("  - Flags count:", Object.keys(allFlags).length);
-          console.debug("  - Flag keys:", Object.keys(allFlags));
-          console.debug("  - Procurando por:", flagKey);
+          console.error("🐛 DEBUG CRÍTICO:");
+          console.error("  - Flags count:", flagKeys.length);
+          console.error("  - Flags encontradas:", flagKeys);
+          console.error("  - Flag procurada:", flagKey);
+          console.error("  - PROBLEMA: Flag procurada NÃO está na lista!");
+          console.error("  - Possíveis soluções:");
+          console.error("    1. Usar um dos nomes acima");
+          console.error("    2. Verificar o nome exato no painel do Amplitude");
+          console.error("    3. A flag pode estar em draft ou arquivada");
         }
 
         setVariant(variantValue);
