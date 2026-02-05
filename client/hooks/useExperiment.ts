@@ -25,12 +25,20 @@ const initializeExperimentClient = async () => {
 
   try {
     console.log("🔄 Inicializando Experiment client...");
-    console.log("📍 API Key:", AMPLITUDE_API_KEY.substring(0, 10) + "...");
+
+    if (!AMPLITUDE_EXPERIMENT_KEY) {
+      console.error("❌ AMPLITUDE_EXPERIMENT_KEY não configurada!");
+      console.error("❌ Adicione VITE_AMPLITUDE_EXPERIMENT_KEY ao .env.local");
+      return null;
+    }
+
+    console.log("📍 Analytics API Key:", AMPLITUDE_API_KEY?.substring(0, 10) + "...");
+    console.log("📍 Experiment Deployment Key:", AMPLITUDE_EXPERIMENT_KEY.substring(0, 10) + "...");
 
     // Aguardar um pouco para garantir que Amplitude SDK foi inicializado
     await new Promise(resolve => setTimeout(resolve, 500));
 
-    experimentClient = Experiment.initialize(AMPLITUDE_API_KEY, {
+    experimentClient = Experiment.initialize(AMPLITUDE_EXPERIMENT_KEY, {
       exposureTrackingProvider: amplitude,
     });
 
