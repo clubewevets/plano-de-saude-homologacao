@@ -60,11 +60,14 @@ export const useAmplitude = () => {
 
     const initAmplitude = async () => {
       try {
-        console.log("🔄 Inicializando Amplitude...");
+        console.log("\n🟣 ===== INICIALIZANDO AMPLITUDE =====");
+        console.log(`🔑 API Key: ${AMPLITUDE_API_KEY}`);
 
         // Gerar ou recuperar Device ID
         storedDeviceId = generateDeviceId();
+        console.log(`📱 Device ID gerado/recuperado: ${storedDeviceId}`);
 
+        console.log("🔄 Chamando amplitude.init()...");
         await amplitude.init(AMPLITUDE_API_KEY, {
           deviceId: storedDeviceId, // Usar o Device ID gerado
           defaultTracking: {
@@ -75,8 +78,11 @@ export const useAmplitude = () => {
           sessionReplayTracking: false,
         });
 
+        console.log("✅ amplitude.init() completado");
+
         // Configurar custom path como propriedade do usuário via um evento especial
         // Usando track com uma propriedade que será associada ao usuário
+        console.log("🔄 Rastreando user_properties...");
         amplitude.track("user_properties", {
           custom_path: "/landing-page/plano",
         });
@@ -84,8 +90,10 @@ export const useAmplitude = () => {
         console.log("✅ Amplitude inicializado com sucesso!");
         console.log("📍 Device ID em uso:", storedDeviceId);
         console.log("🛣️ Custom path configurado: /landing-page/plano");
+        console.log("🟣 ===== AMPLITUDE INICIALIZADO COM SUCESSO =====\n");
       } catch (error) {
         console.error("❌ Erro na inicialização do Amplitude:", error);
+        console.log("🟣 ===== ERRO NA INICIALIZAÇÃO =====\n");
       }
     };
 
