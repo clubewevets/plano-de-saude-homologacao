@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Preconnect to critical domains for faster font and image loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.builder.io" />
+    <link rel="preconnect" href="https://api.builder.io" />
+    <link rel="preconnect" href="https://wevets.sydle.one" />
+    <link rel="dns-prefetch" href="https://connect.facebook.net" />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+    <!-- Load Google Fonts non-blocking -->
+    <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap"
+      />
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap"
+      />
+    </noscript>
+    <!-- Preload critical fonts (font files only, not stylesheets) -->
+    <link
+      rel="preload"
+      href="https://cdn.builder.io/o/assets%2Fad3b24e0eebc41a888274aae2381ca13%2F54403de7b60f499eba00347807532a92?alt=media&token=e6042f5e-b2a5-4543-9720-124437082c76&apiKey=ad3b24e0eebc41a888274aae2381ca13"
+      as="font"
+      type="font/opentype"
+      crossorigin
+    />
+    <!-- Google Tag Manager -->
+    <script async>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-W5T6ZJSR");
+    </script>
+    <!-- End Google Tag Manager -->
+    <!-- UTM Parameter Capture -->
+    <script async>
+      (function () {
+        const params = new URLSearchParams(window.location.search);
+        const utmParams = {};
+
+        [
+          "utm_source",
+          "utm_medium",
+          "utm_campaign",
+          "utm_id",
+          "utm_term",
+          "utm_content",
+          "gclid",
+          "fbclid",
+        ].forEach((key) => {
+          if (params.has(key)) {
+            utmParams[key] = params.get(key);
+          }
+        });
+
+        if (Object.keys(utmParams).length > 0) {
+          localStorage.setItem("wevets_utm", JSON.stringify(utmParams));
+        }
+      })();
+    </script>
+    <!-- End UTM Parameter Capture -->
+    <!-- Facebook Pixel -->
+    <script async>
+      !(function (f, b, e, v, n, t, s) {
+        if (f.fbq) return;
+        n = f.fbq = function () {
+          n.callMethod
+            ? n.callMethod.apply(n, arguments)
+            : n.queue.push(arguments);
+        };
+        if (!f._fbq) f._fbq = n;
+        n.push = n;
+        n.loaded = !0;
+        n.version = "2.0";
+        n.queue = [];
+        t = b.createElement(e);
+        t.async = !0;
+        t.src = v;
+        s = b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t, s);
+      })(
+        window,
+        document,
+        "script",
+        "https://connect.facebook.net/en_US/fbevents.js",
+      );
+      fbq("init", "1132747654256549");
+      fbq("track", "PageView");
+    </script>
+    <!-- End Facebook Pixel -->
+    <title>Plano de Saúde Pet: Cuidado para Seu Cão e Gato | WeVets</title>
+
+    <meta
+      name="description"
+      content="Proteja seu companheiro com o Plano de Saúde Pet da WeVets. Cobertura veterinária, check-ups e emergências com os melhores benefícios!"
+    />
+
+    <meta
+      property="og:title"
+      content="Plano de Saúde Pet: Cuidado para Seu Cão e Gato | WeVets"
+    />
+    <meta
+      property="og:description"
+      content="Proteja seu companheiro com o Plano de Saúde Pet da WeVets. Cobertura veterinária, check-ups e emergências com os melhores benefícios!"
+    />
+    <meta property="og:type" content="website" />
+  </head>
+
+  <body>
+    <!-- Global error handler to suppress external script errors -->
+    <script>
+      // Monkey-patch Element.prototype.matches to handle invalid selectors
+      const originalMatches = Element.prototype.matches;
+      Element.prototype.matches = function(selector) {
+        try {
+          return originalMatches.call(this, selector);
+        } catch (e) {
+          if (e.message && e.message.includes('Failed to execute')) {
+            console.warn('Suppressed invalid selector error:', selector.substring(0, 50));
+            return false;
+          }
+          throw e;
+        }
+      };
+
+      // Also monkey-patch querySelector family
+      const originalQuerySelectorAll = Element.prototype.querySelectorAll;
+      Element.prototype.querySelectorAll = function(selector) {
+        try {
+          return originalQuerySelectorAll.call(this, selector);
+        } catch (e) {
+          if (e.message && e.message.includes('Failed to execute')) {
+            console.warn('Suppressed invalid querySelectorAll:', selector.substring(0, 50));
+            return [];
+          }
+          throw e;
+        }
+      };
+
+      // Global error handler
+      window.addEventListener('error', (event) => {
+        if (event.filename && event.filename.includes('ca-wevets.js')) {
+          if (event.message && event.message.includes('Failed to execute')) {
+            console.warn('Suppressed ca-wevets.js error');
+            event.preventDefault();
+          }
+        }
+      }, true);
+
+      // Capture all clicks globally (capturing phase)
+      document.addEventListener('click', (event) => {
+        const target = event.target as HTMLElement;
+        if (target && target.id === 'btn-hero-contratar') {
+          console.log('🔴 GLOBAL: Hero button clicked!');
+        }
+      }, true);
+    </script>
+    <!-- End Global error handler -->
+
+    <!-- Google Tag Manager (noscript) -->
+    <noscript>
+      <iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-W5T6ZJSR"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <!-- Facebook Pixel (noscript) -->
+    <noscript>
+      <img
+        height="1"
+        width="1"
+        style="display: none"
+        src="https://www.facebook.com/tr?id=1132747654256549&ev=PageView&noscript=1"
+      />
+    </noscript>
+    <!-- End Facebook Pixel (noscript) -->
+
+    <div id="root"></div>
+
+    <script type="module" defer src="/client/App.tsx"></script>
+  </body>
+</html>
