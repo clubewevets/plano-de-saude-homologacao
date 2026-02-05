@@ -691,8 +691,7 @@ export default function Index() {
           <div
             className="absolute inset-0 flex items-center"
             style={{
-              display:
-                heroBannerVariant === "treatment_100off" ? "none" : "flex",
+              display: "flex",
             }}
           >
             <div
