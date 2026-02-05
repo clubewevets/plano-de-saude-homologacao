@@ -316,13 +316,12 @@ export const getHeroBannerVariant = async (): Promise<
     );
 
     // Adicionar delay maior para garantir que o Experiment SDK carregou
-    console.log("⏳ Aguardando Experiment SDK carregar (1 segundo)...");
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    console.log("⏳ Aguardando Experiment SDK carregar (2 segundos)...");
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     console.log("📌 Verificando Experiment object:");
     console.log(`   experiment existe? ${!!experiment}`);
     console.log(`   experiment type: ${typeof experiment}`);
-    console.log(`   experiment: ${JSON.stringify(experiment)}`);
 
     if (!experiment) {
       console.log("⚠️ Experiment SDK NÃO inicializado! Retornando control_50off");
@@ -331,6 +330,21 @@ export const getHeroBannerVariant = async (): Promise<
     }
 
     console.log("✅ Experiment SDK está inicializado");
+
+    // Tentar fazer fetch das variantes se ainda não foi feito
+    if (
+      experiment &&
+      typeof experiment.fetch === "function"
+    ) {
+      console.log("🔄 Tentando fazer fetch das feature flags...");
+      try {
+        await experiment.fetch();
+        console.log("✅ Feature flags carregadas");
+      } catch (fetchError) {
+        console.warn("⚠️ Erro ao fazer fetch das variantes:", fetchError);
+      }
+    }
+
     console.log("📌 Chamando experiment.variant()...");
 
     // Obter variante usando o Experiment SDK
