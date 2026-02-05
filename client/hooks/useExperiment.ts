@@ -90,6 +90,17 @@ const initializeExperimentClient = async () => {
     console.log("✅ Experiment client inicializado com sucesso!");
     console.log("📍 Experiment client flags:", experimentClient.flags);
     console.log("📍 Todas as features:", Object.keys(experimentClient.flags || {}));
+
+    // Verificação adicional
+    if (!experimentClient.flags || Object.keys(experimentClient.flags).length === 0) {
+      console.warn("⚠️ AVISO: Nenhuma flag foi retornada pelo Amplitude!");
+      console.warn("⚠️ Possíveis causas:");
+      console.warn("  1. A chave de deployment está incorreta");
+      console.warn("  2. Nenhuma flag foi criada ou está ativa no projeto");
+      console.warn("  3. O projeto no Amplitude é diferente da chave");
+      console.warn("  4. A flag precisa de targeting que não corresponde ao seu usuário");
+    }
+
     return experimentClient;
   } catch (error) {
     console.error("❌ Erro ao inicializar Experiment client:", error);
