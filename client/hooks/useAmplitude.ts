@@ -136,45 +136,26 @@ export const trackEvent = (
   eventName: string,
   eventProperties?: Record<string, any>,
 ) => {
-  console.log(`\n🔴 ===== trackEvent INÍCIO =====`);
-  console.log(`📌 Nome do evento: ${eventName}`);
-  console.log(`📌 AMPLITUDE_API_KEY configurada: ${!!AMPLITUDE_API_KEY}`);
-
   // Construir propriedades do evento com parâmetros automáticos
   const enrichedProperties = {
-    // Parâmetros obrigatórios
     custom_path: "/landing-page/plano",
     device_category: getDeviceCategory(),
     event: eventName,
     event_timestamp: new Date().toISOString(),
     event_type: eventName,
     operating_system: getOperatingSystem(),
-
-    // Adicionar propriedades customizadas passadas
     ...eventProperties,
   };
 
-  console.log(`📊 Propriedades enriquecidas:`, enrichedProperties);
-
   if (!AMPLITUDE_API_KEY) {
-    console.warn("❌ Sem API key para rastrear evento");
-    console.log(`🔴 ===== trackEvent FIM (SEM API KEY) =====\n`);
     return;
   }
 
   try {
-    console.log(`🚀 Chamando amplitude.track()...`);
     amplitude.track(eventName, enrichedProperties);
-    console.log(`✓ amplitude.track() executado com sucesso`);
-
-    // Flush immediately to ensure event is sent
-    console.log(`🚀 Chamando amplitude.flush()...`);
     amplitude.flush();
-    console.log(`✓ amplitude.flush() executado com sucesso`);
-    console.log(`🔴 ===== trackEvent FIM (SUCESSO) =====\n`);
   } catch (error) {
-    console.error(`❌ Erro ao rastrear ${eventName}:`, error);
-    console.log(`🔴 ===== trackEvent FIM (ERRO) =====\n`);
+    console.error(`Erro ao rastrear ${eventName}:`, error);
   }
 };
 
