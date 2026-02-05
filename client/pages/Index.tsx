@@ -9,6 +9,7 @@ import {
 import { STATS, PLANS, COVERAGE_LINKS, TESTIMONIALS } from "../data/pageData";
 import { analyticsEvents } from "../utils/analyticsEvents";
 import { addDeviceIdToUrl } from "../hooks/useAmplitude";
+import { useFeatureFlag } from "../hooks/useExperiment";
 const Footer = lazy(() => import("../components/Footer"));
 
 export default function Index() {
@@ -27,6 +28,17 @@ export default function Index() {
   const [touchEndX, setTouchEndX] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showFloatingButton, setShowFloatingButton] = useState(false);
+
+  // Feature flag for banner A/B test
+  const { variant: bannerVariant, isLoading: bannerVariantLoading } =
+    useFeatureFlag("teste-a-b-banner-50-100-off");
+
+  // Debug banner variant
+  useEffect(() => {
+    console.log("🎯 Banner Variant:");
+    console.log(`  - Loading: ${bannerVariantLoading}`);
+    console.log(`  - Variant: ${bannerVariant}`);
+  }, [bannerVariant, bannerVariantLoading]);
 
   const handleBillingPeriodChange = (period: "mensal" | "anual") => {
     setBillingPeriod(period);
@@ -537,8 +549,18 @@ export default function Index() {
       </header>
 
       {/* New Hero Section - Mobile Only */}
-      <section id="inicio" className="md:hidden flex flex-col bg-[#FBF7EF]">
-        <div className="px-4 py-8 flex flex-col items-center gap-4 max-w-[345px] mx-auto w-full">
+      <section
+        id="inicio"
+        className={`md:hidden flex flex-col ${
+          bannerVariant === "treatment_100off" ? "bg-white" : "bg-[#FBF7EF]"
+        }`}
+      >
+        <div
+          className="px-4 py-8 flex flex-col items-center gap-4 max-w-[345px] mx-auto w-full"
+          style={{
+            display: bannerVariant === "treatment_100off" ? "none" : "flex",
+          }}
+        >
           {/* Badge */}
           <div className="inline-flex items-center justify-center px-3 py-1 border rounded-lg hero-badge">
             <span
@@ -566,7 +588,7 @@ export default function Index() {
               }}
             >
               <span data-teams="true" className="hero-title-first">
-                O amor pelo
+                amor
               </span>
               <br />
               <span className="hero-title-second">seu pet é 24h</span>
@@ -649,17 +671,24 @@ export default function Index() {
         <div
           className="hidden md:block md:relative md:w-screen md:overflow-hidden"
           style={{
-            backgroundColor: "#fbf7ef",
+            backgroundColor: bannerVariant === "treatment_100off" ? "#ffffff" : "#fbf7ef",
             height: "636px",
             backgroundImage:
-              "url(https://cdn.builder.io/api/v1/image/assets%2Fad3b24e0eebc41a888274aae2381ca13%2Fed88029a87dc48d7bcd69c24d114125d?format=webp&width=1600&height=2400)",
+              bannerVariant === "treatment_100off"
+                ? "none"
+                : "url(https://cdn.builder.io/api/v1/image/assets%2Fad3b24e0eebc41a888274aae2381ca13%2Fed88029a87dc48d7bcd69c24d114125d?format=webp&width=1600&height=2400)",
             backgroundSize: "auto 100%",
             backgroundPosition: "85% center",
             backgroundRepeat: "no-repeat",
           }}
         >
           {/* Content Overlay */}
-          <div className="absolute inset-0 flex items-center">
+          <div
+            className="absolute inset-0 flex items-center"
+            style={{
+              display: bannerVariant === "treatment_100off" ? "none" : "flex",
+            }}
+          >
             <div
               className="flex flex-col items-start gap-8"
               style={{
@@ -697,7 +726,7 @@ export default function Index() {
                     color: "#055391",
                   }}
                 >
-                  <span data-teams="true">O amor pelo</span>
+                  <span data-teams="true">amor</span>
                   <br />
                   seu pet é 24h
                 </h1>
