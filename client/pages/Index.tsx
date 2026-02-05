@@ -542,7 +542,12 @@ export default function Index() {
       </header>
 
       {/* New Hero Section - Mobile Only */}
-      <section id="inicio" className="md:hidden flex flex-col bg-[#FBF7EF]">
+      <section
+        id="inicio"
+        className={`md:hidden flex flex-col ${
+          bannerVariant === "on" ? "bg-white" : "bg-[#FBF7EF]"
+        }`}
+      >
         <div className="px-4 py-8 flex flex-col items-center gap-4 max-w-[345px] mx-auto w-full">
           {/* Badge */}
           <div className="inline-flex items-center justify-center px-3 py-1 border rounded-lg hero-badge">
