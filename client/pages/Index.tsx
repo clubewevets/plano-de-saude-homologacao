@@ -33,6 +33,14 @@ export default function Index() {
   const { variant: bannerVariant, loading: bannerVariantLoading } =
     useExperimentVariant("teste-a-b-banner-50-100-off");
 
+  // Debug banner variant
+  useEffect(() => {
+    console.log("🎯 Banner Variant Status:");
+    console.log(`  - Loading: ${bannerVariantLoading}`);
+    console.log(`  - Variant: ${bannerVariant}`);
+    console.log(`  - Banner visível: ${bannerVariant !== "treatment_100off"}`);
+  }, [bannerVariant, bannerVariantLoading]);
+
   const handleBillingPeriodChange = (period: "mensal" | "anual") => {
     setBillingPeriod(period);
   };
