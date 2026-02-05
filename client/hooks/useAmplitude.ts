@@ -246,3 +246,42 @@ export const trackScreenView = (
 
   trackEvent("screen_view", screenViewProps);
 };
+
+// A/B Testing - Determine variant based on device ID
+export const getExperimentVariant = (
+  experimentName: string,
+  variants: string[],
+): string => {
+  if (typeof window === "undefined" || variants.length === 0) {
+    return variants[0] || "control";
+  }
+
+  const deviceId = getDeviceId();
+  if (!deviceId) {
+    return variants[0] || "control";
+  }
+
+  // Use device ID hash to determine variant (consistent across sessions)
+  const hash = deviceId
+    .split("")
+    .reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const variantIndex = hash % variants.length;
+
+  const assignedVariant = variants[variantIndex];
+  console.log(
+    `📊 A/B Test - ${experimentName}: ${assignedVariant} (Device ID: ${deviceId})`,
+  );
+
+  return assignedVariant;
+};
+
+// Track A/B test variant exposure
+export const trackVariantExposure = (
+  experimentName: string,
+  variantName: string,
+) => {
+  trackEvent("variant_exposure", {
+    experiment_name: experimentName,
+    variant_name: variantName,
+  });
+};
