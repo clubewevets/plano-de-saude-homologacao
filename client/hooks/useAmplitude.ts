@@ -281,7 +281,7 @@ export const trackScreenView = (
   trackEvent("screen_view", screenViewProps);
 };
 
-// A/B Testing - Get variant from Amplitude feature flag
+// A/B Testing - Get variant from Amplitude Experiment
 export const getHeroBannerVariant = async (): Promise<
   "control_50off" | "treatment_100off"
 > => {
@@ -297,45 +297,20 @@ export const getHeroBannerVariant = async (): Promise<
       '🔄 Obtendo variante da feature flag "teste-a-b-banner-50-100-off"...'
     );
 
-    // Adicionar pequeno delay para garantir que o Amplitude carregou as feature flags
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // Adicionar pequeno delay para garantir que o Experiment SDK carregou
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
-    console.log("📌 Amplitude object:", amplitude);
-    const metodos = Object.keys(amplitude);
-    console.log("📌 Métodos disponíveis:", metodos);
-    console.log("📌 Lista completa de métodos:");
-    metodos.forEach((m) => console.log(`   - ${m}`));
-
-    // Tentar diferentes métodos de acessar feature flags
-    let variant: any;
-
-    // Tenta amplitude.getVariant() - novo SDK
-    if (typeof amplitude.getVariant === "function") {
-      console.log("✅ Usando amplitude.getVariant()");
-      variant = amplitude.getVariant("teste-a-b-banner-50-100-off");
-    }
-    // Tenta amplitude.variant() - outro padrão
-    else if (typeof amplitude.variant === "function") {
-      console.log("✅ Usando amplitude.variant()");
-      variant = amplitude.variant("teste-a-b-banner-50-100-off");
-    }
-    // Tenta amplitude.experiment() - outro padrão
-    else if (typeof amplitude.experiment === "function") {
-      console.log("✅ Usando amplitude.experiment()");
-      const experiment = amplitude.experiment("teste-a-b-banner-50-100-off");
-      variant = experiment?.variant;
-    }
-    // Tenta via experiments object
-    else if ((amplitude as any).experiments) {
-      console.log("✅ Acessando via amplitude.experiments");
-      variant = (amplitude as any).experiments["teste-a-b-banner-50-100-off"];
-    }
-    else {
-      console.log("❌ Nenhum método de feature flag encontrado");
-      console.log("   Métodos disponíveis:", Object.getOwnPropertyNames(Object.getPrototypeOf(amplitude)));
+    if (!experiment) {
+      console.log("⚠️ Experiment SDK não inicializado");
+      return "control_50off";
     }
 
-    console.log(`🎯 A/B Test - Variante obtida do Amplitude:`);
+    console.log("📌 Experiment object:", experiment);
+
+    // Obter variante usando o Experiment SDK
+    const variant = experiment.variant("teste-a-b-banner-50-100-off");
+
+    console.log(`🎯 A/B Test - Variante obtida do Amplitude Experiment:`);
     console.log(`   Variant: ${variant}`);
     console.log(`   Tipo: ${typeof variant}`);
 
