@@ -268,8 +268,10 @@ export const trackScreenView = (
   trackEvent("screen_view", screenViewProps);
 };
 
-// A/B Testing - Get variant for feature flag test
-export const getHeroBannerVariant = (): "control_50off" | "treatment_100off" => {
+// A/B Testing - Get variant from Amplitude feature flag
+export const getHeroBannerVariant = async (): Promise<
+  "control_50off" | "treatment_100off"
+> => {
   console.log("🔵 getHeroBannerVariant() chamado");
 
   if (typeof window === "undefined") {
@@ -277,30 +279,31 @@ export const getHeroBannerVariant = (): "control_50off" | "treatment_100off" => 
     return "control_50off";
   }
 
-  const deviceId = getDeviceId();
-  console.log(`📱 Device ID obtido: ${deviceId}`);
+  try {
+    console.log(
+      '🔄 Obtendo variante da feature flag "teste-a-b-banner-50-100-off"...'
+    );
 
-  if (!deviceId) {
-    console.log("⚠️ Device ID não encontrado, retornando control_50off");
+    // Get variant from Amplitude feature flag
+    const variant = amplitude.getVariant("teste-a-b-banner-50-100-off");
+
+    console.log(`🎯 A/B Test - Variante obtida do Amplitude:`);
+    console.log(`   Variant: ${variant}`);
+
+    // If variant is not one of our expected variants, default to control_50off
+    if (variant !== "control_50off" && variant !== "treatment_100off") {
+      console.log(
+        `⚠️ Variante inesperada: ${variant}, usando control_50off como padrão`
+      );
+      return "control_50off";
+    }
+
+    return variant as "control_50off" | "treatment_100off";
+  } catch (error) {
+    console.error("❌ Erro ao obter variante:", error);
+    console.log("⚠️ Retornando control_50off como padrão");
     return "control_50off";
   }
-
-  // Use device ID hash to determine variant (consistent across sessions)
-  const hash = deviceId
-    .split("")
-    .reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  const variantIndex = hash % 2;
-
-  const variant =
-    variantIndex === 0 ? "control_50off" : "treatment_100off";
-
-  console.log(`🎯 A/B Test - Hero Banner Variant Determinada:`);
-  console.log(`   Variant: ${variant}`);
-  console.log(`   Device ID: ${deviceId}`);
-  console.log(`   Hash: ${hash}`);
-  console.log(`   Variant Index: ${variantIndex}`);
-
-  return variant;
 };
 
 // Track when user is exposed to variant
