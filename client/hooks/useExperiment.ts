@@ -136,11 +136,23 @@ export const useExperimentVariant = (
         }
 
         // Get the variant for the feature flag
+        console.log(`🔍 Buscando variante para flag: "${flagKey}"`);
         const variantObj = client.variant(flagKey);
         const variantValue = variantObj?.value || "control";
 
         console.log(`📊 Variant para "${flagKey}": ${variantValue}`);
         console.log(`📊 Variant objeto completo:`, variantObj);
+        console.log(`📊 Todas as flags do client:`, client.flags);
+
+        if (!variantObj || !variantObj.value) {
+          console.warn(
+            `⚠️ Flag "${flagKey}" não encontrada ou sem valor. Retornando padrão "control"`
+          );
+          console.warn(
+            `⚠️ Verifique se a feature flag foi criada no Amplitude e está ativa`
+          );
+        }
+
         setVariant(variantValue);
       } catch (error) {
         console.error(
