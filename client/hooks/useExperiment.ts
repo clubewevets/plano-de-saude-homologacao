@@ -26,25 +26,58 @@ const initializeExperimentClient = async () => {
     console.log("🔄 Inicializando Experiment client...");
     console.log("📍 API Key:", AMPLITUDE_API_KEY.substring(0, 10) + "...");
 
+    // Aguardar um pouco para garantir que Amplitude SDK foi inicializado
+    await new Promise(resolve => setTimeout(resolve, 500));
+
     experimentClient = Experiment.initialize(AMPLITUDE_API_KEY, {
       exposureTrackingProvider: amplitude,
     });
 
-    const userId = amplitude.getUserId();
-    const deviceId = amplitude.getDeviceId();
+    // Tentar obter IDs do Amplitude, com fallback para localStorage
+    let userId = amplitude.getUserId();
+    let deviceId = amplitude.getDeviceId();
+
+    // Se não conseguir do Amplitude, tentar do localStorage
+    if (!deviceId) {
+      const storageKey = "amp_device_id";
+      deviceId = localStorage.getItem(storageKey) || undefined;
+      console.warn("⚠️ Device ID não encontrado no Amplitude, usando localStorage:", deviceId);
+    }
 
     console.log("📍 User ID:", userId);
     console.log("📍 Device ID:", deviceId);
 
-    await experimentClient.fetch({
-      user: {
-        user_id: userId || "anonymous",
-        device_id: deviceId || undefined,
-      },
-    });
+    // Fazer fetch com retry
+    let maxRetries = 3;
+    let lastError: Error | null = null;
+
+    for (let i = 0; i < maxRetries; i++) {
+      try {
+        console.log(`🔄 Tentativa ${i + 1}/${maxRetries} de fazer fetch...`);
+        await experimentClient.fetch({
+          user: {
+            user_id: userId || "anonymous",
+            device_id: deviceId || undefined,
+          },
+        });
+        console.log("✅ Fetch realizado com sucesso!");
+        break;
+      } catch (error) {
+        lastError = error as Error;
+        console.warn(`⚠️ Tentativa ${i + 1}/${maxRetries} falhou:`, error);
+        if (i < maxRetries - 1) {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+      }
+    }
+
+    if (lastError && maxRetries > 0) {
+      console.error("❌ Erro final ao fazer fetch:", lastError);
+    }
 
     console.log("✅ Experiment client inicializado com sucesso!");
     console.log("📍 Experiment client flags:", experimentClient.flags);
+    console.log("📍 Todas as features:", Object.keys(experimentClient.flags || {}));
     return experimentClient;
   } catch (error) {
     console.error("❌ Erro ao inicializar Experiment client:", error);
