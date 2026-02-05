@@ -285,19 +285,43 @@ export const getHeroBannerVariant = async (): Promise<
     );
 
     // Adicionar pequeno delay para garantir que o Amplitude carregou as feature flags
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     console.log("📌 Amplitude object:", amplitude);
-    console.log("📌 amplitude.getVariant:", amplitude.getVariant);
+    console.log("📌 Métodos disponíveis:", Object.keys(amplitude));
 
-    // Get variant from Amplitude feature flag
-    const variant = amplitude.getVariant("teste-a-b-banner-50-100-off");
+    // Tentar diferentes métodos de acessar feature flags
+    let variant: any;
+
+    // Tenta amplitude.getVariant() - novo SDK
+    if (typeof amplitude.getVariant === "function") {
+      console.log("✅ Usando amplitude.getVariant()");
+      variant = amplitude.getVariant("teste-a-b-banner-50-100-off");
+    }
+    // Tenta amplitude.variant() - outro padrão
+    else if (typeof amplitude.variant === "function") {
+      console.log("✅ Usando amplitude.variant()");
+      variant = amplitude.variant("teste-a-b-banner-50-100-off");
+    }
+    // Tenta amplitude.experiment() - outro padrão
+    else if (typeof amplitude.experiment === "function") {
+      console.log("✅ Usando amplitude.experiment()");
+      const experiment = amplitude.experiment("teste-a-b-banner-50-100-off");
+      variant = experiment?.variant;
+    }
+    // Tenta via experiments object
+    else if ((amplitude as any).experiments) {
+      console.log("✅ Acessando via amplitude.experiments");
+      variant = (amplitude as any).experiments["teste-a-b-banner-50-100-off"];
+    }
+    else {
+      console.log("❌ Nenhum método de feature flag encontrado");
+      console.log("   Métodos disponíveis:", Object.getOwnPropertyNames(Object.getPrototypeOf(amplitude)));
+    }
 
     console.log(`🎯 A/B Test - Variante obtida do Amplitude:`);
     console.log(`   Variant: ${variant}`);
     console.log(`   Tipo: ${typeof variant}`);
-    console.log(`   É control_50off? ${variant === "control_50off"}`);
-    console.log(`   É treatment_100off? ${variant === "treatment_100off"}`);
 
     // If variant is null or undefined, default to control_50off
     if (!variant) {
@@ -315,6 +339,7 @@ export const getHeroBannerVariant = async (): Promise<
       return "control_50off";
     }
 
+    console.log(`✅ Variante validada: ${variant}`);
     return variant as "control_50off" | "treatment_100off";
   } catch (error) {
     console.error("❌ Erro ao obter variante:", error);
