@@ -32,6 +32,7 @@ const AppContent = () => {
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        <BrowserRouter>
           <PageTracker />
           <Routes>
             <Route path="/" element={<Index />} />
