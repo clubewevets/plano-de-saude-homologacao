@@ -188,18 +188,14 @@ export const getDeviceId = (): string | null => {
 };
 
 export const addDeviceIdToUrl = (baseUrl: string): string => {
-  console.log("🔵 addDeviceIdToUrl chamado");
-
   const deviceId = getDeviceId();
 
   if (!deviceId) {
-    console.warn("⚠️ Device ID não encontrado, usando URL sem parâmetro");
     return baseUrl;
   }
 
   const separator = baseUrl.includes("?") ? "&" : "?";
   const urlWithDeviceId = `${baseUrl}${separator}amp_device_id=${encodeURIComponent(deviceId)}`;
-  console.log("✅ URL com Device ID:", urlWithDeviceId);
   return urlWithDeviceId;
 };
 
