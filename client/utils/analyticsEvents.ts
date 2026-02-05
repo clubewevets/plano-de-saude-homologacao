@@ -633,4 +633,13 @@ export const analyticsEvents = {
       variant_name: variantName,
     });
   },
+
+  // Hero banner variant specific tracking
+  trackHeroBannerViewed: (variant: string) => {
+    trackEvent("hero_banner_viewed", {
+      experiment_name: "hero_banner_test",
+      variant_name: variant,
+      banner_type: variant === "control_white" ? "white_background" : "image_background",
+    });
+  },
 };
