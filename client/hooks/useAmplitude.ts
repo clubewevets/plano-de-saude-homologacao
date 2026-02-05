@@ -288,7 +288,10 @@ export const getHeroBannerVariant = async (): Promise<
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     console.log("📌 Amplitude object:", amplitude);
-    console.log("📌 Métodos disponíveis:", Object.keys(amplitude));
+    const metodos = Object.keys(amplitude);
+    console.log("📌 Métodos disponíveis:", metodos);
+    console.log("📌 Lista completa de métodos:");
+    metodos.forEach((m) => console.log(`   - ${m}`));
 
     // Tentar diferentes métodos de acessar feature flags
     let variant: any;
