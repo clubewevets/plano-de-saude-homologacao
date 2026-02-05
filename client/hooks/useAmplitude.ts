@@ -346,9 +346,18 @@ export const getHeroBannerVariant = async (): Promise<
     }
 
     console.log("📌 Chamando experiment.variant()...");
+    console.log(`📌 Feature flag name: "teste-a-b-banner-50-100-off"`);
 
-    // Obter variante usando o Experiment SDK
-    const variant = experiment.variant("teste-a-b-banner-50-100-off");
+    let variant: any;
+    try {
+      // Obter variante usando o Experiment SDK
+      variant = experiment.variant("teste-a-b-banner-50-100-off");
+      console.log(`✅ experiment.variant() retornou com sucesso`);
+    } catch (variantError) {
+      console.error("❌ Erro ao chamar experiment.variant():", variantError);
+      console.log("🔵 ===== getHeroBannerVariant() FIM (VARIANT ERROR) =====\n");
+      return "control_50off";
+    }
 
     console.log(`🎯 A/B Test - Variante obtida do Amplitude Experiment:`);
     console.log(`   Raw variant: ${JSON.stringify(variant)}`);
