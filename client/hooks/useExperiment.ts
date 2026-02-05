@@ -18,8 +18,9 @@ const initializeExperimentClient = async () => {
     return experimentClient;
   }
 
-  if (!AMPLITUDE_API_KEY) {
-    console.warn("❌ AMPLITUDE_API_KEY não configurada para experiments");
+  if (!AMPLITUDE_EXPERIMENT_KEY) {
+    console.warn("❌ AMPLITUDE_EXPERIMENT_KEY não configurada");
+    console.warn("❌ Adicione VITE_AMPLITUDE_EXPERIMENT_KEY ao .env.local");
     return null;
   }
 
