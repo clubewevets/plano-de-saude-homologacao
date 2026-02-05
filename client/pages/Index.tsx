@@ -29,9 +29,9 @@ export default function Index() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showFloatingButton, setShowFloatingButton] = useState(false);
 
-  // Feature flag for banner A/B test - will be created in Amplitude
+  // Feature flag for banner A/B test
   const { variant: bannerVariant, isLoading: bannerVariantLoading } =
-    useFeatureFlag("banner-test");
+    useFeatureFlag("teste-a-b-banner-50-100-off");
 
   // Debug banner variant
   useEffect(() => {
