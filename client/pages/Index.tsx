@@ -548,7 +548,12 @@ export default function Index() {
           bannerVariant === "on" ? "bg-white" : "bg-[#FBF7EF]"
         }`}
       >
-        <div className="px-4 py-8 flex flex-col items-center gap-4 max-w-[345px] mx-auto w-full">
+        <div
+          className="px-4 py-8 flex flex-col items-center gap-4 max-w-[345px] mx-auto w-full"
+          style={{
+            display: bannerVariant === "on" ? "none" : "flex",
+          }}
+        >
           {/* Badge */}
           <div className="inline-flex items-center justify-center px-3 py-1 border rounded-lg hero-badge">
             <span
