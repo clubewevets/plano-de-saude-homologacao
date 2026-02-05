@@ -31,9 +31,10 @@ export default function Index() {
   const [touchEndX, setTouchEndX] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showFloatingButton, setShowFloatingButton] = useState(false);
+  // Começa com control_50off já visível (sem null para evitar delay)
   const [heroBannerVariant, setHeroBannerVariant] = useState<
-    "control_50off" | "treatment_100off" | null
-  >(null);
+    "control_50off" | "treatment_100off"
+  >("control_50off");
 
   const handleBillingPeriodChange = (period: "mensal" | "anual") => {
     setBillingPeriod(period);
