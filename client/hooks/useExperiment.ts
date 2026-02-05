@@ -196,11 +196,20 @@ export const useExperimentVariant = (
         const allFlags = client.flags || {};
         const flagKeys = Object.keys(allFlags);
 
-        console.log(`📊 Todas as flags disponíveis:`, flagKeys);
+        console.log(`📊 Total de flags: ${flagKeys.length}`);
         console.log(`📊 Listando cada flag disponível:`);
-        flagKeys.forEach((key) => {
-          console.log(`  - "${key}":`, allFlags[key]);
-        });
+
+        // Log cada flag individualmente
+        if (flagKeys.length === 0) {
+          console.log("  ❌ NENHUMA FLAG ENCONTRADA!");
+        } else {
+          flagKeys.forEach((key, index) => {
+            const flag = allFlags[key];
+            console.log(`  [${index + 1}] Flag name: "${key}"`);
+            console.log(`      Value: ${flag?.value || "undefined"}`);
+            console.log(`      Full object: `, flag);
+          });
+        }
 
         const variantObj = client.variant(flagKey);
         const variantValue = variantObj?.value || "control";
