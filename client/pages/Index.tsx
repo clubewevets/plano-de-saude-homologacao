@@ -730,7 +730,7 @@ export default function Index() {
                     color: "#055391",
                   }}
                 >
-                  <span data-teams="true">Seu amor</span>
+                  <span data-teams="true">O amor pelo</span>
                   <br />
                   seu pet é 24h
                 </h1>
