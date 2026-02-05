@@ -90,24 +90,19 @@ export const useAmplitude = () => {
         console.log("✅ amplitude.init() completado");
 
         // Inicializar Amplitude Experiment
-        console.log("🔄 Inicializando Amplitude Experiment...");
         try {
           experiment = Experiment.initialize(
             AMPLITUDE_DEPLOYMENT_KEY,
             storedDeviceId
           );
 
-          console.log("✅ Amplitude Experiment inicializado");
-          console.log("🔄 Carregando feature flags...");
-
-          // Pré-carregar feature flags (com await para garantir carregamento)
+          // Pré-carregar feature flags
           if (
             experiment &&
             typeof experiment.fetch === "function"
           ) {
             try {
               await experiment.fetch();
-              console.log("✅ Feature flags carregadas com sucesso");
 
               // Armazenar variante em cache assim que carregar
               const variant = experiment!.variant(
@@ -127,21 +122,14 @@ export const useAmplitude = () => {
                   variantName === "treatment_100off"
                 ) {
                   variantCache["teste-a-b-banner-50-100-off"] = variantName;
-                  console.log(
-                    `💾 Variante em cache: ${variantName}`
-                  );
                 }
               }
             } catch (fetchError) {
-              console.warn("⚠️ Erro ao fazer fetch:", fetchError);
+              // Silencioso se falhar
             }
           }
         } catch (expError) {
-          console.error(
-            "⚠️ Erro ao inicializar Amplitude Experiment:",
-            expError
-          );
-          console.log("   Continuando sem feature flags do Experiment");
+          // Silencioso se falhar
         }
 
         // Configurar custom path como propriedade do usuário via um evento especial
