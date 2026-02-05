@@ -388,10 +388,6 @@ export const getHeroBannerVariant = async (): Promise<
 
 // Track when user is exposed to variant from feature flag
 export const trackHeroBannerVariant = (variant: string) => {
-  console.log(
-    `🟡 trackHeroBannerVariant() chamado com variant: ${variant}`
-  );
-
   const eventData = {
     feature_flag_name: "teste-a-b-banner-50-100-off",
     variant_name: variant,
@@ -401,11 +397,5 @@ export const trackHeroBannerVariant = (variant: string) => {
         : "hero_with_content",
   };
 
-  console.log("📊 Enviando evento com dados:", eventData);
-
   trackEvent("hero_banner_variant_exposure", eventData);
-
-  console.log(
-    `✅ Evento rastreado com sucesso: hero_banner_variant_exposure`
-  );
 };
