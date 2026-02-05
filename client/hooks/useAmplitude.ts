@@ -86,6 +86,15 @@ export const useAmplitude = () => {
 
         console.log("✅ amplitude.init() completado");
 
+        // Inicializar Amplitude Experiment
+        console.log("🔄 Inicializando Amplitude Experiment...");
+        experiment = Experiment.initialize(
+          AMPLITUDE_DEPLOYMENT_KEY,
+          storedDeviceId
+        );
+
+        console.log("✅ Amplitude Experiment inicializado");
+
         // Configurar custom path como propriedade do usuário via um evento especial
         // Usando track com uma propriedade que será associada ao usuário
         console.log("🔄 Rastreando user_properties...");
