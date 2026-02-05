@@ -639,7 +639,7 @@ export const analyticsEvents = {
     trackEvent("hero_banner_viewed", {
       experiment_name: "hero_banner_test",
       variant_name: variant,
-      banner_type: variant === "control_white" ? "white_background" : "image_background",
+      banner_type: variant === "treatment_100off" ? "blank" : "with_content",
     });
   },
 };
