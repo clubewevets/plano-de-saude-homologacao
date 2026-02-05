@@ -175,20 +175,14 @@ export const setUserProperties = (properties: Record<string, any>) => {
 
 export const getDeviceId = (): string | null => {
   try {
-    console.log("🔍 Tentando capturar Device ID...");
-
-    // Se Amplitude já foi inicializado, usar o Device ID armazenado
     if (storedDeviceId) {
-      console.log("✓ Device ID encontrado:", storedDeviceId);
       return storedDeviceId;
     }
 
-    // Tentar gerar se ainda não foi
     const deviceId = generateDeviceId();
-    console.log("✓ Device ID (gerado):", deviceId);
     return deviceId;
   } catch (error) {
-    console.error("❌ Erro ao capturar Device ID:", error);
+    console.error("Erro ao capturar Device ID:", error);
     return null;
   }
 };
