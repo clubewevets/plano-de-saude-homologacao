@@ -169,14 +169,25 @@ export default function Index() {
   });
 
   useEffect(() => {
-    // A/B Test: Determine hero banner variant
+    // A/B Test: Determine hero banner variant from Amplitude feature flag
     console.log("🟢 Index.tsx - useEffect A/B Test iniciado");
-    const variant = getHeroBannerVariant();
-    console.log(`🟢 Index.tsx - Variante obtida: ${variant}`);
-    setHeroBannerVariant(variant);
-    console.log(`🟢 Index.tsx - Estado atualizado com variante: ${variant}`);
-    trackHeroBannerVariant(variant);
-    console.log(`🟢 Index.tsx - Rastreamento iniciado para variante: ${variant}`);
+
+    const initVariant = async () => {
+      try {
+        const variant = await getHeroBannerVariant();
+        console.log(`🟢 Index.tsx - Variante obtida: ${variant}`);
+        setHeroBannerVariant(variant);
+        console.log(`🟢 Index.tsx - Estado atualizado com variante: ${variant}`);
+        trackHeroBannerVariant(variant);
+        console.log(
+          `🟢 Index.tsx - Rastreamento iniciado para variante: ${variant}`
+        );
+      } catch (error) {
+        console.error("🟢 Index.tsx - Erro ao obter variante:", error);
+      }
+    };
+
+    initVariant();
   }, []);
 
   useEffect(() => {
