@@ -1,11 +1,7 @@
 import { useEffect } from "react";
 import * as amplitude from "@amplitude/analytics-browser";
-import { Experiment } from "@amplitude/experiment-js-client";
 
 const AMPLITUDE_API_KEY = import.meta.env.VITE_AMPLITUDE_API_KEY;
-const AMPLITUDE_DEPLOYMENT_KEY = "client-TcXHfrz7NjtkopltLEIOekKyEV2kssqh";
-
-let experiment: Experiment | null = null;
 
 // Detectar categoria do dispositivo (mobile ou desktop)
 const getDeviceCategory = (): string => {
