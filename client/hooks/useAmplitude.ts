@@ -221,6 +221,12 @@ export const getHeroBannerVariant = async (): Promise<string> => {
     return heroBannerVariantCache;
   }
 
+  // Wait for initialization to complete
+  console.log("Waiting for Amplitude initialization...");
+  if (initializationPromise) {
+    await initializationPromise;
+  }
+
   // Return default if experiment not initialized
   if (!experimentInstance) {
     console.warn(
