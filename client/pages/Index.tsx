@@ -9,6 +9,7 @@ import {
 import { STATS, PLANS, COVERAGE_LINKS, TESTIMONIALS } from "../data/pageData";
 import { analyticsEvents } from "../utils/analyticsEvents";
 import { addDeviceIdToUrl, getHeroBannerVariant } from "../hooks/useAmplitude";
+import { ExperimentDebug } from "../components/ExperimentDebug";
 const Footer = lazy(() => import("../components/Footer"));
 
 export default function Index() {
