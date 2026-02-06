@@ -339,19 +339,27 @@ export const getHeroBannerVariant = async (): Promise<
     console.log("🎯 Nome da variante extraído:", variantName);
     console.log("🎯 Valor bruto:", variant);
 
-    // Validar variante
-    if (
-      variantName !== "control_50off" &&
-      variantName !== "treatment_100off"
-    ) {
-      console.log("⚠️ Variante inválida:", variantName);
-      return "control_50off";
+    // Mapear variantes conhecidas
+    let mappedVariant: "control_50off" | "treatment_100off" = "control_50off";
+
+    if (variantName === "control_50off") {
+      mappedVariant = "control_50off";
+      console.log("✅ Variante mapeada para:", mappedVariant);
+    } else if (variantName === "treatment_100off") {
+      mappedVariant = "treatment_100off";
+      console.log("✅ Variante mapeada para:", mappedVariant);
+    } else if (variantName === "off" || variantName === null || variantName === undefined) {
+      console.log("⚠️ Variante 'off' (padrão) - usando control_50off");
+      mappedVariant = "control_50off";
+    } else {
+      console.log("⚠️ Variante desconhecida:", variantName, "- usando control_50off como padrão");
+      mappedVariant = "control_50off";
     }
 
     // Armazenar em cache
-    variantCache[featureFlagName] = variantName;
-    console.log("✅ Variante armazenada em cache:", variantName);
-    return variantName as "control_50off" | "treatment_100off";
+    variantCache[featureFlagName] = mappedVariant;
+    console.log("✅ Variante armazenada em cache:", mappedVariant);
+    return mappedVariant;
   } catch (error) {
     console.error("❌ Erro geral em getHeroBannerVariant:", error);
     return "control_50off";
