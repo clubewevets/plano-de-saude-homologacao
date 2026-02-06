@@ -3,6 +3,11 @@ import * as amplitude from "@amplitude/analytics-browser";
 import * as Experiment from "@amplitude/experiment-js-client";
 
 const AMPLITUDE_API_KEY = import.meta.env.VITE_AMPLITUDE_API_KEY;
+const AMPLITUDE_EXPERIMENT_DEPLOYMENT_KEY = import.meta.env
+  .VITE_AMPLITUDE_EXPERIMENT_DEPLOYMENT_KEY;
+
+let experimentInstance: typeof Experiment | null = null;
+let heroBannerVariantCache: string | null = null;
 
 // Detectar categoria do dispositivo (mobile ou desktop)
 const getDeviceCategory = (): string => {
