@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import * as amplitude from "@amplitude/analytics-browser";
+import * as Experiment from "@amplitude/experiment-js-client";
 
 const AMPLITUDE_API_KEY = import.meta.env.VITE_AMPLITUDE_API_KEY;
 
