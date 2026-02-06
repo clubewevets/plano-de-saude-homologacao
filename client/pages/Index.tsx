@@ -166,10 +166,12 @@ export default function Index() {
     // Fetch Amplitude Experiment variant
     const fetchVariant = async () => {
       try {
+        console.log("Index.tsx: Fetching hero banner variant...");
         const variant = await getHeroBannerVariant();
+        console.log("Index.tsx: Hero banner variant received:", variant);
         setHeroBannerVariant(variant);
       } catch (error) {
-        console.error("Erro ao obter variante do banner:", error);
+        console.error("Index.tsx: Erro ao obter variante do banner:", error);
       }
     };
 
