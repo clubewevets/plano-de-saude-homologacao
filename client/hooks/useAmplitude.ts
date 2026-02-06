@@ -321,6 +321,8 @@ export const getHeroBannerVariant = async (): Promise<
           allKeys: Object.keys(variant),
           toString: variant.toString(),
         });
+        console.log("📌 Variante JSON.stringify:", JSON.stringify(variant, null, 2));
+        console.log("📌 Variante Object.entries:", Object.entries(variant));
       }
     } catch (variantError) {
       console.error("❌ Erro ao obter variante:", variantError);
