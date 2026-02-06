@@ -170,6 +170,33 @@ export const addDeviceIdToUrl = (baseUrl: string): string => {
   return urlWithDeviceId;
 };
 
+export const getHeroBannerVariant = async (): Promise<string> => {
+  // Return cached variant if available
+  if (heroBannerVariantCache) {
+    return heroBannerVariantCache;
+  }
+
+  // Return default if experiment not initialized
+  if (!experimentInstance) {
+    return "control_50off";
+  }
+
+  try {
+    // Get variant from experiment SDK
+    const variant = experimentInstance.variant(
+      "teste-a-b-banner-50-100-off",
+    );
+    if (variant && variant.key) {
+      heroBannerVariantCache = variant.key;
+      return variant.key;
+    }
+  } catch (error) {
+    console.error("Erro ao obter variante do banner:", error);
+  }
+
+  return "control_50off";
+};
+
 export const trackScreenView = (
   screenName?: string,
   additionalProps?: Record<string, any>,
