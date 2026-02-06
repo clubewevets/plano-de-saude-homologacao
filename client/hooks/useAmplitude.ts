@@ -349,16 +349,23 @@ export const trackHeroBannerVariant = (variant: string) => {
     variant,
     flagKey,
     experimentExists: !!experiment,
+    experimentMethods: experiment ? Object.getOwnPropertyNames(Object.getPrototypeOf(experiment)) : [],
   });
 
-  // O Amplitude Experiment SDK rastreia automaticamente o exposure
-  // quando variant() é chamado, se vinculado ao Analytics SDK
+  // Tentar rastrear exposure usando o método correto
   if (experiment) {
     try {
-      console.log("📤 Exposure será rastreado automaticamente para:", flagKey);
-      console.log("✅ Variante obtida e exposure registrado:", variant);
+      // Tentar usar o método exposure() se disponível
+      if (typeof (experiment as any).exposure === "function") {
+        console.log("📤 Chamando experiment.exposure() para:", flagKey);
+        (experiment as any).exposure(flagKey);
+        console.log("✅ Exposure registrado com sucesso");
+      } else {
+        console.warn("⚠️ Método exposure() não disponível no experiment");
+        console.log("📊 Métodos disponíveis:", Object.getOwnPropertyNames(Object.getPrototypeOf(experiment)));
+      }
     } catch (error) {
-      console.error("❌ Erro ao rastrear variant:", error);
+      console.error("❌ Erro ao rastrear exposure:", error);
     }
   } else {
     console.error("❌ Experiment não disponível");
