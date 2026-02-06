@@ -9,41 +9,47 @@ export const useBuilderExposure = () => {
   useEffect(() => {
     console.log("🟦 useBuilderExposure inicializado");
 
-    // Monitorar o objeto window para o Builder
-    const checkBuilderExposure = setInterval(() => {
-      try {
-        // Verificar se o Builder está disponível
-        const builder = (window as any).builderExposures;
-        
-        if (builder) {
-          console.log("✅ Builder.io detectado, configurando exposure tracking");
-          clearInterval(checkBuilderExposure);
-          
-          // Interceptar exposures do Builder
-          setupBuilderExposureListener();
-        }
-      } catch (error) {
-        console.debug("Builder ainda não carregado");
-      }
-    }, 500);
+    const cleanups: (() => void)[] = [];
 
-    return () => clearInterval(checkBuilderExposure);
+    // Configurar todos os listeners
+    const setupListeners = () => {
+      // Método 1: Monitorar Storage
+      cleanups.push(setupStorageListener());
+
+      // Método 2: Monitorar DOM
+      cleanups.push(setupDOMObserver());
+
+      // Método 3: Verificar window periodicamente
+      cleanups.push(checkWindowForBuilderData());
+    };
+
+    setupListeners();
+
+    // Cleanup
+    return () => {
+      cleanups.forEach((cleanup) => cleanup());
+    };
   }, []);
 };
 
 /**
- * Configura listener para eventos de exposure do Builder
+ * Monitora mudanças no localStorage
  */
-function setupBuilderExposureListener() {
-  // Método 1: Espionar por mudanças no localStorage (Builder salva alguns dados lá)
+function setupStorageListener(): () => void {
   const originalSetItem = Storage.prototype.setItem;
-  
-  Storage.prototype.setItem = function(key: string, value: string) {
-    if (key.includes("builder") || key.includes("exposure")) {
+  let isTracked = false;
+
+  Storage.prototype.setItem = function (key: string, value: string) {
+    if (
+      (key.includes("builder") || key.includes("exposure")) &&
+      !isTracked
+    ) {
       try {
         const data = JSON.parse(value);
-        if (data.experimentId || data.flagKey) {
+        if (data.experimentId || data.flagKey || data.variant) {
+          isTracked = true;
           handleBuilderExposure(data);
+          isTracked = false;
         }
       } catch (e) {
         // Não é JSON, ignorar
@@ -52,85 +58,27 @@ function setupBuilderExposureListener() {
     return originalSetItem.call(this, key, value);
   };
 
-  // Método 2: Monitorar console para capturar os logs do Builder
-  const originalLog = console.log;
-  console.log = function(...args: any[]) {
-    const message = args.map((a) => 
-      typeof a === "string" ? a : JSON.stringify(a)
-    ).join(" ");
-
-    // Capturar logs de exposure
-    if (
-      message.includes("exposure") ||
-      message.includes("Enviando exposure") ||
-      message.includes("teste-a-b")
-    ) {
-      console.debug("📤 Log de exposure detectado:", message);
-      parseAndTrackExposure(message, args);
-    }
-
-    return originalLog.apply(console, args);
+  return () => {
+    Storage.prototype.setItem = originalSetItem;
   };
-
-  // Método 3: Usar MutationObserver para detectar mudanças no DOM/atributos
-  setupDOMObserver();
-
-  // Método 4: Periodicamente verificar se há dados de experiment no window
-  checkWindowForBuilderData();
-}
-
-/**
- * Extrai dados de exposure dos logs e envia ao Amplitude
- */
-function parseAndTrackExposure(message: string, args: any[]) {
-  try {
-    // Procurar por padrões conhecidos
-    const experimentMatch = message.match(/teste-a-b-([a-zA-Z0-9-]+)/);
-    const keyMatch = message.match(/key["\s:]*["\']([^"\']+)/i);
-    const variantMatch = message.match(/variant["\s:]*["\']([^"\']+)/i);
-
-    let flagKey = experimentMatch?.[1] || null;
-    let variant = variantMatch?.[1] || null;
-
-    // Se não encontrou, procurar nos args
-    if (!flagKey || !variant) {
-      for (const arg of args) {
-        if (typeof arg === "object" && arg !== null) {
-          if (arg.key) variant = arg.key;
-          if (arg.experimentId) flagKey = arg.experimentId;
-          if (arg.flagKey) flagKey = arg.flagKey;
-          if (arg.name) flagKey = arg.name;
-        }
-      }
-    }
-
-    // Se encontrou dados suficientes, enviar ao Amplitude
-    if (flagKey || variant) {
-      console.log(
-        "🎯 Enviando exposure ao Amplitude:",
-        { flagKey, variant }
-      );
-
-      trackEvent("experiment_exposure", {
-        flag_key: flagKey || "unknown",
-        variant: variant || "unknown",
-        source: "builder_io",
-        timestamp: new Date().toISOString(),
-      });
-    }
-  } catch (error) {
-    console.error("❌ Erro ao parsear exposure:", error);
-  }
 }
 
 /**
  * Observa mudanças no DOM para detectar elementos relacionados a experiments
  */
-function setupDOMObserver() {
-  const observer = new MutationObserver((mutations) => {
+function setupDOMObserver(): () => void {
+  let observer: MutationObserver | null = null;
+  const trackedElements = new Set<HTMLElement>();
+
+  observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       if (mutation.type === "attributes") {
         const element = mutation.target as HTMLElement;
+
+        // Evitar tracking duplicado
+        if (trackedElements.has(element)) {
+          return;
+        }
 
         // Procurar por atributos que indiquem experiment/variant
         const experimentAttr = element.getAttribute("data-experiment");
@@ -138,6 +86,7 @@ function setupDOMObserver() {
         const builderAttr = element.getAttribute("data-builder");
 
         if (experimentAttr || variantAttr || builderAttr) {
+          trackedElements.add(element);
           console.log("🏷️ Elemento com experiment detectado:", {
             experimentAttr,
             variantAttr,
@@ -160,43 +109,50 @@ function setupDOMObserver() {
     subtree: true,
     attributeFilter: ["data-experiment", "data-variant", "data-builder"],
   });
+
+  return () => {
+    if (observer) {
+      observer.disconnect();
+    }
+  };
 }
 
 /**
  * Verifica periodicamente se há dados de experiment no objeto window
  */
-function checkWindowForBuilderData() {
+function checkWindowForBuilderData(): () => void {
+  const trackedExperiments = new Set<string>();
+
   const checkInterval = setInterval(() => {
     try {
-      // Procurar por objetos conhecidos do Builder no window
       const win = window as any;
 
+      // Verificar __BUILDER_CONTEXT__
       if (win.__BUILDER_CONTEXT__) {
         const context = win.__BUILDER_CONTEXT__;
         if (context.experimentKey && context.variant) {
-          trackEvent("experiment_exposure", {
-            flag_key: context.experimentKey,
-            variant: context.variant,
-            source: "window_context",
-            timestamp: new Date().toISOString(),
-          });
+          const key = `${context.experimentKey}-${context.variant}`;
+          if (!trackedExperiments.has(key)) {
+            trackedExperiments.add(key);
+            trackEvent("experiment_exposure", {
+              flag_key: context.experimentKey,
+              variant: context.variant,
+              source: "window_context",
+              timestamp: new Date().toISOString(),
+            });
+          }
         }
       }
 
-      // Procurar em qualquer propriedade que tenha "experiment" ou "variant"
-      Object.keys(win).forEach((key) => {
-        if (
-          (key.toLowerCase().includes("experiment") ||
-            key.toLowerCase().includes("variant")) &&
-          typeof win[key] === "object"
-        ) {
-          console.debug(`Found builder data in window.${key}:`, win[key]);
-        }
-      });
+      // Verificar se há dados em builderExposures ou similar
+      if (win.builderExposures) {
+        console.log("📦 Builder exposures encontrado:", win.builderExposures);
+        handleBuilderExposure(win.builderExposures);
+      }
     } catch (error) {
       // Ignorar erros de segurança
     }
-  }, 2000);
+  }, 3000);
 
   return () => clearInterval(checkInterval);
 }
@@ -207,7 +163,7 @@ function checkWindowForBuilderData() {
 function handleBuilderExposure(data: any) {
   console.log("🎬 Processando exposure do Builder:", data);
 
-  const flagKey = data.flagKey || data.experimentId || data.name;
+  const flagKey = data.flagKey || data.experimentId || data.name || data.key;
   const variant = data.variant || data.variantId || data.value;
 
   if (flagKey || variant) {
