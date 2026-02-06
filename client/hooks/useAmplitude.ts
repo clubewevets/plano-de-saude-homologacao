@@ -76,6 +76,21 @@ export const useAmplitude = () => {
         amplitude.track("user_properties", {
           custom_path: "/landing-page/plano",
         });
+
+        // Initialize Amplitude Experiment SDK linked to Analytics
+        if (AMPLITUDE_EXPERIMENT_DEPLOYMENT_KEY) {
+          try {
+            experimentInstance =
+              Experiment.initializeWithAmplitudeAnalytics(
+                AMPLITUDE_EXPERIMENT_DEPLOYMENT_KEY,
+              );
+
+            // Fetch feature flags and expose events
+            await experimentInstance.fetch();
+          } catch (error) {
+            console.error("Erro ao inicializar Amplitude Experiment:", error);
+          }
+        }
       } catch (error) {
         console.error("Erro ao inicializar Amplitude:", error);
       }
