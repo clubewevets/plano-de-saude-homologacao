@@ -9,6 +9,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import { useAmplitude, trackScreenView } from "./hooks/useAmplitude";
+import { useBuilderExposure } from "./hooks/useBuilderExposure";
 import { useEffect } from "react";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const PageTracker = () => {
 
 const AppContent = () => {
   useAmplitude();
+  useBuilderExposure();
 
   return (
     <QueryClientProvider client={queryClient}>
