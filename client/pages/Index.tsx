@@ -3314,7 +3314,7 @@ export default function Index() {
           {/* Contratar plano Button */}
           <a
             id="btn-mobile-contratar-plano"
-            href="https://planowevets.com.br/login"
+            href="https://planowevets-hom.sydle.com/login"
             onClick={() => {
               analyticsEvents.clickBotaoFlutanteContratar();
             }}
