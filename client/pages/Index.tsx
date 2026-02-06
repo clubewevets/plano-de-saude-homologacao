@@ -813,9 +813,7 @@ export default function Index() {
                 lineHeight: "120%",
               }}
             >
-              {heroBannerVariant === "treatment_100off"
-                ? "2 meses grátis"
-                : "50% OFF por 4 meses"}
+              50% OFF por 4 meses
             </h3>
             <p
               className="text-white/80"
