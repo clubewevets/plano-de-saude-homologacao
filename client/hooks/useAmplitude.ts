@@ -1,7 +1,15 @@
 import { useEffect } from "react";
 import * as amplitude from "@amplitude/analytics-browser";
+import * as Experiment from "@amplitude/experiment-js-client";
 
 const AMPLITUDE_API_KEY = import.meta.env.VITE_AMPLITUDE_API_KEY;
+const AMPLITUDE_EXPERIMENT_DEPLOYMENT_KEY = import.meta.env
+  .VITE_AMPLITUDE_EXPERIMENT_DEPLOYMENT_KEY;
+
+let experimentInstance: typeof Experiment | null = null;
+let heroBannerVariantCache: string | null = null;
+let isInitialized = false;
+let initializationPromise: Promise<void> | null = null;
 
 // Detectar categoria do dispositivo (mobile ou desktop)
 const getDeviceCategory = (): string => {
@@ -39,9 +47,6 @@ const generateDeviceId = (): string => {
     // Gerar novo Device ID se não existir
     deviceId = `device_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     localStorage.setItem(storageKey, deviceId);
-    console.log("✨ Novo Device ID gerado:", deviceId);
-  } else {
-    console.log("♻️ Device ID recuperado do localStorage:", deviceId);
   }
 
   return deviceId;
@@ -49,24 +54,28 @@ const generateDeviceId = (): string => {
 
 let storedDeviceId: string | null = null;
 
+let resolveInitialization: (() => void) | null = null;
+
 export const useAmplitude = () => {
   useEffect(() => {
-    console.log("🟡 useAmplitude hook iniciado");
-
     if (!AMPLITUDE_API_KEY) {
-      console.warn("❌ AMPLITUDE_API_KEY não configurada");
       return;
+    }
+
+    // Create promise if not already created
+    if (!initializationPromise) {
+      initializationPromise = new Promise((resolve) => {
+        resolveInitialization = resolve;
+      });
     }
 
     const initAmplitude = async () => {
       try {
-        console.log("🔄 Inicializando Amplitude...");
-
         // Gerar ou recuperar Device ID
         storedDeviceId = generateDeviceId();
 
         await amplitude.init(AMPLITUDE_API_KEY, {
-          deviceId: storedDeviceId, // Usar o Device ID gerado
+          deviceId: storedDeviceId,
           defaultTracking: {
             pageViews: false,
             formInteractions: true,
@@ -75,17 +84,59 @@ export const useAmplitude = () => {
           sessionReplayTracking: false,
         });
 
-        // Configurar custom path como propriedade do usuário via um evento especial
-        // Usando track com uma propriedade que será associada ao usuário
         amplitude.track("user_properties", {
           custom_path: "/landing-page/plano",
         });
 
-        console.log("✅ Amplitude inicializado com sucesso!");
-        console.log("📍 Device ID em uso:", storedDeviceId);
-        console.log("🛣️ Custom path configurado: /landing-page/plano");
+        // Initialize Amplitude Experiment SDK linked to Analytics
+        // Must be called AFTER amplitude.init()
+        if (AMPLITUDE_EXPERIMENT_DEPLOYMENT_KEY) {
+          try {
+            console.log(
+              "Initializing Amplitude Experiment with deployment key:",
+              AMPLITUDE_EXPERIMENT_DEPLOYMENT_KEY,
+            );
+
+            // Initialize returns the instance directly (not a promise)
+            experimentInstance =
+              Experiment.initializeWithAmplitudeAnalytics(
+                AMPLITUDE_EXPERIMENT_DEPLOYMENT_KEY,
+              );
+
+            console.log("Experiment instance created, fetching variants...");
+
+            // Fetch feature flags - this returns a promise
+            await experimentInstance.fetch();
+
+            console.log("Variants fetched successfully");
+
+            // Log available variants
+            const variant = experimentInstance.variant(
+              "teste-a-b-banner-50-100-off",
+            );
+            console.log(
+              "Hero banner variant assigned:",
+              variant ? variant.key : "null",
+            );
+          } catch (error) {
+            console.error("Erro ao inicializar Amplitude Experiment:", error);
+          }
+        } else {
+          console.warn(
+            "VITE_AMPLITUDE_EXPERIMENT_DEPLOYMENT_KEY not set in environment",
+          );
+        }
+
+        isInitialized = true;
+        if (resolveInitialization) {
+          resolveInitialization();
+        }
       } catch (error) {
-        console.error("❌ Erro na inicialização do Amplitude:", error);
+        console.error("Erro ao inicializar Amplitude:", error);
+        isInitialized = true;
+        if (resolveInitialization) {
+          resolveInitialization();
+        }
       }
     };
 
@@ -99,34 +150,24 @@ export const trackEvent = (
 ) => {
   // Construir propriedades do evento com parâmetros automáticos
   const enrichedProperties = {
-    // Parâmetros obrigatórios
     custom_path: "/landing-page/plano",
     device_category: getDeviceCategory(),
     event: eventName,
     event_timestamp: new Date().toISOString(),
     event_type: eventName,
     operating_system: getOperatingSystem(),
-
-    // Adicionar propriedades customizadas passadas
     ...eventProperties,
   };
 
-  console.log(`📊 trackEvent: ${eventName}`, enrichedProperties);
-
   if (!AMPLITUDE_API_KEY) {
-    console.warn("❌ Sem API key para rastrear evento");
     return;
   }
 
   try {
     amplitude.track(eventName, enrichedProperties);
-    console.log(`✓ Evento rastreado: ${eventName}`);
-
-    // Flush immediately to ensure event is sent
     amplitude.flush();
-    console.log(`✓ Amplitude flush chamado para garantir envio`);
   } catch (error) {
-    console.error(`❌ Erro ao rastrear ${eventName}:`, error);
+    console.error(`Erro ao rastrear ${eventName}:`, error);
   }
 };
 
@@ -149,38 +190,73 @@ export const setUserProperties = (properties: Record<string, any>) => {
 
 export const getDeviceId = (): string | null => {
   try {
-    console.log("🔍 Tentando capturar Device ID...");
-
-    // Se Amplitude já foi inicializado, usar o Device ID armazenado
     if (storedDeviceId) {
-      console.log("✓ Device ID encontrado:", storedDeviceId);
       return storedDeviceId;
     }
 
-    // Tentar gerar se ainda não foi
     const deviceId = generateDeviceId();
-    console.log("✓ Device ID (gerado):", deviceId);
     return deviceId;
   } catch (error) {
-    console.error("❌ Erro ao capturar Device ID:", error);
+    console.error("Erro ao capturar Device ID:", error);
     return null;
   }
 };
 
 export const addDeviceIdToUrl = (baseUrl: string): string => {
-  console.log("🔵 addDeviceIdToUrl chamado");
-
   const deviceId = getDeviceId();
 
   if (!deviceId) {
-    console.warn("⚠️ Device ID não encontrado, usando URL sem parâmetro");
     return baseUrl;
   }
 
   const separator = baseUrl.includes("?") ? "&" : "?";
   const urlWithDeviceId = `${baseUrl}${separator}amp_device_id=${encodeURIComponent(deviceId)}`;
-  console.log("✅ URL com Device ID:", urlWithDeviceId);
   return urlWithDeviceId;
+};
+
+export const getHeroBannerVariant = async (): Promise<string> => {
+  // Return cached variant if available
+  if (heroBannerVariantCache) {
+    console.log("Returning cached variant:", heroBannerVariantCache);
+    return heroBannerVariantCache;
+  }
+
+  // Wait for initialization to complete
+  console.log("Waiting for Amplitude initialization...");
+  if (initializationPromise) {
+    await initializationPromise;
+  }
+
+  // Return default if experiment not initialized
+  if (!experimentInstance) {
+    console.warn(
+      "Experiment instance not initialized, returning default variant",
+    );
+    return "control_50off";
+  }
+
+  try {
+    // Get variant from experiment SDK
+    console.log("Fetching variant for: teste-a-b-banner-50-100-off");
+    const variant = experimentInstance.variant(
+      "teste-a-b-banner-50-100-off",
+    );
+
+    console.log("Variant result:", variant);
+
+    if (variant && variant.key) {
+      heroBannerVariantCache = variant.key;
+      console.log("Banner variant assigned:", variant.key);
+      return variant.key;
+    } else {
+      console.warn("No variant key found in response");
+    }
+  } catch (error) {
+    console.error("Erro ao obter variante do banner:", error);
+  }
+
+  console.log("Returning default variant: control_50off");
+  return "control_50off";
 };
 
 export const trackScreenView = (
@@ -241,8 +317,6 @@ export const trackScreenView = (
     // Informações customizadas adicionais
     ...additionalProps,
   };
-
-  console.log("📊 trackScreenView - Informações Coletadas:", screenViewProps);
 
   trackEvent("screen_view", screenViewProps);
 };

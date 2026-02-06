@@ -8,10 +8,18 @@ import {
 } from "lucide-react";
 import { STATS, PLANS, COVERAGE_LINKS, TESTIMONIALS } from "../data/pageData";
 import { analyticsEvents } from "../utils/analyticsEvents";
-import { addDeviceIdToUrl } from "../hooks/useAmplitude";
+import {
+  addDeviceIdToUrl,
+  getHeroBannerVariant,
+  useAmplitude,
+} from "../hooks/useAmplitude";
+import { ExperimentDebug } from "../components/ExperimentDebug";
 const Footer = lazy(() => import("../components/Footer"));
 
 export default function Index() {
+  // Initialize Amplitude tracking
+  useAmplitude();
+
   // Map imported constants to local variable names for compatibility
   const stats = STATS;
   const plans = PLANS;
@@ -27,6 +35,7 @@ export default function Index() {
   const [touchEndX, setTouchEndX] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showFloatingButton, setShowFloatingButton] = useState(false);
+  const [heroBannerVariant, setHeroBannerVariant] = useState("control_50off");
 
   const handleBillingPeriodChange = (period: "mensal" | "anual") => {
     setBillingPeriod(period);
@@ -162,6 +171,22 @@ export default function Index() {
   });
 
   useEffect(() => {
+    // Fetch Amplitude Experiment variant
+    const fetchVariant = async () => {
+      try {
+        console.log("Index.tsx: Fetching hero banner variant...");
+        const variant = await getHeroBannerVariant();
+        console.log("Index.tsx: Hero banner variant received:", variant);
+        setHeroBannerVariant(variant);
+      } catch (error) {
+        console.error("Index.tsx: Erro ao obter variante do banner:", error);
+      }
+    };
+
+    fetchVariant();
+  }, []);
+
+  useEffect(() => {
     // Track Facebook Pixel ViewContent event
     if (typeof fbq !== "undefined") {
       fbq("track", "ViewContent", {
@@ -294,7 +319,9 @@ export default function Index() {
   };
 
   return (
-    <div className="min-h-screen bg-white font-sans">
+    <>
+      <ExperimentDebug />
+      <div className="min-h-screen bg-white font-sans">
       {/* Header - Mobile */}
       <header className="md:hidden sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
         <div className="flex justify-between items-center px-6 py-4">
@@ -566,7 +593,7 @@ export default function Index() {
               }}
             >
               <span data-teams="true" className="hero-title-first">
-                O amor pelo
+                O amor
               </span>
               <br />
               <span className="hero-title-second">seu pet é 24h</span>
@@ -652,14 +679,21 @@ export default function Index() {
             backgroundColor: "#fbf7ef",
             height: "636px",
             backgroundImage:
-              "url(https://cdn.builder.io/api/v1/image/assets%2Fad3b24e0eebc41a888274aae2381ca13%2Fed88029a87dc48d7bcd69c24d114125d?format=webp&width=1600&height=2400)",
+              heroBannerVariant === "treatment_100off"
+                ? "url(https://cdn.builder.io/api/v1/image/assets%2Fad3b24e0eebc41a888274aae2381ca13%2Fb3e64865e91b4aedb9f9553d59e29d92?format=webp&width=1600&height=2400)"
+                : "url(https://cdn.builder.io/api/v1/image/assets%2Fad3b24e0eebc41a888274aae2381ca13%2Fed88029a87dc48d7bcd69c24d114125d?format=webp&width=1600&height=2400)",
             backgroundSize: "auto 100%",
             backgroundPosition: "85% center",
             backgroundRepeat: "no-repeat",
           }}
         >
           {/* Content Overlay */}
-          <div className="absolute inset-0 flex items-center">
+          <div
+            className="absolute inset-0 flex items-center"
+            style={{
+              display: "flex",
+            }}
+          >
             <div
               className="flex flex-col items-start gap-8"
               style={{
@@ -697,7 +731,7 @@ export default function Index() {
                     color: "#055391",
                   }}
                 >
-                  <span data-teams="true">O amor pelo</span>
+                  <span data-teams="true">O amor</span>
                   <br />
                   seu pet é 24h
                 </h1>
@@ -1147,7 +1181,7 @@ export default function Index() {
                 {/* CTA Button */}
                 <a
                   id={`btn-plan-${plan.name.toLowerCase()}-${billingPeriod}`}
-                  href="https://planowevets.com.br/login"
+                  href="https://planowevets-hom.sydle.com/login"
                   onClick={(e) => {
                     e.preventDefault();
                     // Track carousel plan hire event
@@ -1536,7 +1570,7 @@ export default function Index() {
                 {/* CTA Button */}
                 <a
                   id={`btn-plan-${plan.name.toLowerCase()}-${billingPeriod}`}
-                  href="https://planowevets.com.br/login"
+                  href="https://planowevets-hom.sydle.com/login"
                   onClick={(e) => {
                     e.preventDefault();
                     // Track carousel plan hire event
@@ -3111,7 +3145,7 @@ export default function Index() {
               {/* Primary CTA Button */}
               <a
                 id="btn-proteja-seu-pet-contratar"
-                href="https://planowevets.com.br/login"
+                href="https://planowevets-hom.sydle.com/login"
                 onClick={() => {
                   analyticsEvents.clickProtejaContrataAgora();
                   analyticsEvents.clickHirePlan("hero");
@@ -3280,7 +3314,7 @@ export default function Index() {
           {/* Contratar plano Button */}
           <a
             id="btn-mobile-contratar-plano"
-            href="https://planowevets.com.br/login"
+            href="https://planowevets-hom.sydle.com/login"
             onClick={() => {
               analyticsEvents.clickBotaoFlutanteContratar();
             }}
@@ -3361,5 +3395,6 @@ export default function Index() {
         </svg>
       </a>
     </div>
+    </>
   );
 }

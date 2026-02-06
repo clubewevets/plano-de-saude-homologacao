@@ -451,7 +451,7 @@ export const analyticsEvents = {
 
     // Redirect with Device ID
     setTimeout(() => {
-      const destinationUrl = "https://planowevets.com.br/login";
+      const destinationUrl = "https://planowevets-hom.sydle.com/login";
       const urlWithDeviceId = addDeviceIdToUrl(destinationUrl);
       console.log("🚀 Redirecionando para:", urlWithDeviceId);
       window.location.href = urlWithDeviceId;
@@ -486,7 +486,7 @@ export const analyticsEvents = {
 
     // Redirect with Device ID
     setTimeout(() => {
-      const destinationUrl = "https://planowevets.com.br/login";
+      const destinationUrl = "https://planowevets-hom.sydle.com/login";
       const urlWithDeviceId = addDeviceIdToUrl(destinationUrl);
       console.log("🚀 Redirecionando para:", urlWithDeviceId);
       window.location.href = urlWithDeviceId;
@@ -508,7 +508,7 @@ export const analyticsEvents = {
 
     // Redirect with Device ID
     setTimeout(() => {
-      const destinationUrl = "https://planowevets.com.br/login";
+      const destinationUrl = "https://planowevets-hom.sydle.com/login";
       const urlWithDeviceId = addDeviceIdToUrl(destinationUrl);
       console.log("🚀 Redirecionando para:", urlWithDeviceId);
       window.location.href = urlWithDeviceId;
@@ -546,7 +546,7 @@ export const analyticsEvents = {
 
     // Aguarda mais tempo para garantir que o evento foi enviado ao Amplitude
     setTimeout(() => {
-      const destinationUrl = "https://planowevets.com.br/login";
+      const destinationUrl = "https://planowevets-hom.sydle.com/login";
       const urlWithDeviceId = addDeviceIdToUrl(destinationUrl);
       console.log("🚀 Redirecionando para:", urlWithDeviceId);
       window.location.href = urlWithDeviceId;
