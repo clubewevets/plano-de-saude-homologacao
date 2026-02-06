@@ -70,64 +70,6 @@ export const useAmplitude = () => {
           sessionReplayTracking: false,
         });
 
-        // Inicializar Amplitude Experiment
-        try {
-          console.log("🔴 Inicializando Experiment com:", {
-            deploymentKey: AMPLITUDE_DEPLOYMENT_KEY,
-            deviceId: storedDeviceId,
-          });
-
-          // Criar instância do Experiment
-          experiment = Experiment.initialize(
-            AMPLITUDE_DEPLOYMENT_KEY,
-            storedDeviceId
-          );
-
-          console.log("🟢 Experiment inicializado:", experiment);
-
-          // Pré-carregar feature flags
-          if (
-            experiment &&
-            typeof experiment.fetch === "function"
-          ) {
-            try {
-              console.log("🔵 Chamando experiment.fetch()");
-              await experiment.fetch();
-              console.log("🟢 Feature flags carregadas com sucesso");
-
-              // Armazenar variante em cache assim que carregar
-              const variant = experiment!.variant(
-                "teste-a-b-banner-50-100-off"
-              );
-              console.log("🔵 Variante obtida:", variant);
-
-              if (variant) {
-                let variantName: any = variant;
-                if (
-                  variant &&
-                  typeof variant === "object" &&
-                  variant.key
-                ) {
-                  variantName = variant.key;
-                }
-                if (
-                  variantName === "control_50off" ||
-                  variantName === "treatment_100off"
-                ) {
-                  variantCache["teste-a-b-banner-50-100-off"] = variantName;
-                  console.log("✅ Variante em cache:", variantName);
-                }
-              }
-            } catch (fetchError) {
-              console.error("❌ Erro ao fazer fetch:", fetchError);
-            }
-          } else {
-            console.error("❌ Experiment não tem método fetch");
-          }
-        } catch (expError) {
-          console.error("❌ Erro ao inicializar Experiment:", expError);
-        }
-
         amplitude.track("user_properties", {
           custom_path: "/landing-page/plano",
         });
