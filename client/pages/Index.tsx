@@ -163,6 +163,20 @@ export default function Index() {
   });
 
   useEffect(() => {
+    // Fetch Amplitude Experiment variant
+    const fetchVariant = async () => {
+      try {
+        const variant = await getHeroBannerVariant();
+        setHeroBannerVariant(variant);
+      } catch (error) {
+        console.error("Erro ao obter variante do banner:", error);
+      }
+    };
+
+    fetchVariant();
+  }, []);
+
+  useEffect(() => {
     // Track Facebook Pixel ViewContent event
     if (typeof fbq !== "undefined") {
       fbq("track", "ViewContent", {
