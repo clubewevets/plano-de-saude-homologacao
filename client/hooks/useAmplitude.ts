@@ -319,14 +319,14 @@ export const getHeroBannerVariant = async (): Promise<
 
 // Track when user is exposed to variant from feature flag
 export const trackHeroBannerVariant = (variant: string) => {
-  const eventData = {
-    feature_flag_name: "teste-a-b-banner-50-100-off",
-    variant_name: variant,
-    variant_type:
-      variant === "treatment_100off"
-        ? "blank_hero"
-        : "hero_with_content",
-  };
+  const flagKey = "teste-a-b-banner-50-100-off";
 
-  trackEvent("hero_banner_variant_exposure", eventData);
+  // Use native Amplitude Experiment exposure tracking
+  if (experiment && typeof experiment.exposure === "function") {
+    try {
+      experiment.exposure(flagKey);
+    } catch (error) {
+      console.error("Erro ao rastrear exposure:", error);
+    }
+  }
 };
