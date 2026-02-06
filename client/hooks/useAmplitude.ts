@@ -309,18 +309,33 @@ export const getHeroBannerVariant = async (): Promise<
     try {
       variant = experiment.variant(featureFlagName);
       console.log("📌 Variante bruta:", variant);
+      console.log("📌 Tipo da variante:", typeof variant);
+      console.log("📌 Variante é objeto?", variant && typeof variant === "object");
+
+      // Logar todas as propriedades do objeto
+      if (variant && typeof variant === "object") {
+        console.log("📌 Propriedades da variante:", {
+          key: variant.key,
+          value: variant.value,
+          payload: variant.payload,
+          allKeys: Object.keys(variant),
+          toString: variant.toString(),
+        });
+      }
     } catch (variantError) {
       console.error("❌ Erro ao obter variante:", variantError);
       return "control_50off";
     }
 
-    // Se for um objeto, pega a key
+    // Se for um objeto, pega a key ou value
     let variantName: any = variant;
-    if (variant && typeof variant === "object" && variant.key) {
-      variantName = variant.key;
+    if (variant && typeof variant === "object") {
+      // Tentar diferentes propriedades
+      variantName = variant.key || variant.value || variant;
     }
 
-    console.log("🎯 Nome da variante:", variantName);
+    console.log("🎯 Nome da variante extraído:", variantName);
+    console.log("🎯 Valor bruto:", variant);
 
     // Validar variante
     if (
