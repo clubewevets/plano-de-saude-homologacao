@@ -81,9 +81,14 @@ export const useAmplitude = () => {
             deviceId: storedDeviceId,
           });
 
+          // Criar instância do Experiment e vincular ao Analytics
           experiment = Experiment.initialize(
             AMPLITUDE_DEPLOYMENT_KEY,
-            storedDeviceId
+            storedDeviceId,
+            {
+              // Vincular ao cliente do Amplitude Analytics para enviar events nativos
+              analyticsClient: amplitude as any,
+            }
           );
 
           console.log("🟢 Experiment inicializado:", experiment);
