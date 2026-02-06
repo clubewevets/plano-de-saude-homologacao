@@ -667,7 +667,9 @@ export default function Index() {
             backgroundColor: "#fbf7ef",
             height: "636px",
             backgroundImage:
-              "url(https://cdn.builder.io/api/v1/image/assets%2Fad3b24e0eebc41a888274aae2381ca13%2Fed88029a87dc48d7bcd69c24d114125d?format=webp&width=1600&height=2400)",
+              heroBannerVariant === "treatment_100off"
+                ? "url(https://cdn.builder.io/api/v1/image/assets%2Fad3b24e0eebc41a888274aae2381ca13%2Fb3e64865e91b4aedb9f9553d59e29d92?format=webp&width=1600&height=2400)"
+                : "url(https://cdn.builder.io/api/v1/image/assets%2Fad3b24e0eebc41a888274aae2381ca13%2Fed88029a87dc48d7bcd69c24d114125d?format=webp&width=1600&height=2400)",
             backgroundSize: "auto 100%",
             backgroundPosition: "85% center",
             backgroundRepeat: "no-repeat",
