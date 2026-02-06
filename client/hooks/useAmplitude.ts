@@ -374,20 +374,31 @@ export const trackHeroBannerVariant = (variant: string) => {
     variant,
     flagKey,
     experimentExists: !!experiment,
-    experimentMethods: experiment ? Object.getOwnPropertyNames(Object.getPrototypeOf(experiment)) : [],
+    deviceId: storedDeviceId,
   });
 
-  // Tentar rastrear exposure usando o método correto
+  // Rastrear o exposure com detalhes
   if (experiment) {
     try {
-      // Tentar usar o método exposure() se disponível
+      // Chamar exposure() para rastrear que o usuário foi exposto à flag
       if (typeof (experiment as any).exposure === "function") {
-        console.log("📤 Chamando experiment.exposure() para:", flagKey);
+        console.log("📤 Chamando experiment.exposure() com dados:", {
+          flagKey,
+          variant,
+          deviceId: storedDeviceId,
+        });
         (experiment as any).exposure(flagKey);
+
+        // Também rastrear um evento customizado com os dados da variante
+        trackEvent("amplitude_experiment_exposure", {
+          feature_flag_key: flagKey,
+          variant_assigned: variant,
+          flag_key: flagKey,
+        });
+
         console.log("✅ Exposure registrado com sucesso");
       } else {
         console.warn("⚠️ Método exposure() não disponível no experiment");
-        console.log("📊 Métodos disponíveis:", Object.getOwnPropertyNames(Object.getPrototypeOf(experiment)));
       }
     } catch (error) {
       console.error("❌ Erro ao rastrear exposure:", error);
