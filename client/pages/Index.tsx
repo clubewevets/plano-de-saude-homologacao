@@ -1413,11 +1413,9 @@ export default function Index() {
                         }}
                       >
                         {index === 1
-                          ? heroBannerVariant === "treatment_100off"
-                            ? "2 meses grátis"
-                            : billingPeriod === "mensal"
-                              ? "50% OFF 4 meses"
-                              : "2 meses OFF"
+                          ? billingPeriod === "mensal"
+                            ? "50% OFF 4 meses"
+                            : "2 meses OFF"
                           : "Mais popular"}
                       </span>
                     </div>
@@ -1431,27 +1429,23 @@ export default function Index() {
                           fontFamily: "Peridot PE Variable, sans-serif",
                         }}
                       >
-                        {heroBannerVariant === "treatment_100off" && (index === 2 || index === 3)
-                          ? "2 meses grátis"
-                          : billingPeriod === "mensal"
-                            ? (
-                              <>
-                                {index === 0
-                                  ? "Plano anual por R$ 1"
-                                  : index === 2 || index === 3
-                                    ? "50% OFF 4 meses"
-                                    : ""}
-                              </>
-                            )
-                            : (
-                              <>
-                                {index === 0
-                                  ? "Plano anual por R$ 1"
-                                  : index === 2 || index === 3
-                                    ? "2 meses OFF"
-                                    : ""}
-                              </>
-                            )}
+                        {billingPeriod === "mensal" ? (
+                          <>
+                            {index === 0
+                              ? "Plano anual por R$ 1"
+                              : index === 2 || index === 3
+                                ? "50% OFF 4 meses"
+                                : ""}
+                          </>
+                        ) : (
+                          <>
+                            {index === 0
+                              ? "Plano anual por R$ 1"
+                              : index === 2 || index === 3
+                                ? "2 meses OFF"
+                                : ""}
+                          </>
+                        )}
                       </span>
                     </div>
                   )}
