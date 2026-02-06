@@ -162,24 +162,6 @@ export default function Index() {
   });
 
   useEffect(() => {
-    // A/B Test: Determine hero banner variant from Amplitude feature flag
-    const initVariant = async () => {
-      try {
-        const variant = await getHeroBannerVariant();
-        // Só atualiza se for diferente do padrão para evitar re-render desnecessário
-        if (variant !== "control_50off") {
-          setHeroBannerVariant(variant);
-        }
-        trackHeroBannerVariant(variant);
-      } catch (error) {
-        console.error("Erro ao obter variante:", error);
-      }
-    };
-
-    initVariant();
-  }, []);
-
-  useEffect(() => {
     // Track Facebook Pixel ViewContent event
     if (typeof fbq !== "undefined") {
       fbq("track", "ViewContent", {
