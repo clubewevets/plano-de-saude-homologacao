@@ -54,10 +54,19 @@ const generateDeviceId = (): string => {
 
 let storedDeviceId: string | null = null;
 
+let resolveInitialization: (() => void) | null = null;
+
 export const useAmplitude = () => {
   useEffect(() => {
     if (!AMPLITUDE_API_KEY) {
       return;
+    }
+
+    // Create promise if not already created
+    if (!initializationPromise) {
+      initializationPromise = new Promise((resolve) => {
+        resolveInitialization = resolve;
+      });
     }
 
     const initAmplitude = async () => {
@@ -117,8 +126,17 @@ export const useAmplitude = () => {
             "VITE_AMPLITUDE_EXPERIMENT_DEPLOYMENT_KEY not set in environment",
           );
         }
+
+        isInitialized = true;
+        if (resolveInitialization) {
+          resolveInitialization();
+        }
       } catch (error) {
         console.error("Erro ao inicializar Amplitude:", error);
+        isInitialized = true;
+        if (resolveInitialization) {
+          resolveInitialization();
+        }
       }
     };
 
