@@ -8,6 +8,8 @@ const AMPLITUDE_EXPERIMENT_DEPLOYMENT_KEY = import.meta.env
 
 let experimentInstance: typeof Experiment | null = null;
 let heroBannerVariantCache: string | null = null;
+let isInitialized = false;
+let initializationPromise: Promise<void> | null = null;
 
 // Detectar categoria do dispositivo (mobile ou desktop)
 const getDeviceCategory = (): string => {
