@@ -197,27 +197,39 @@ export const addDeviceIdToUrl = (baseUrl: string): string => {
 export const getHeroBannerVariant = async (): Promise<string> => {
   // Return cached variant if available
   if (heroBannerVariantCache) {
+    console.log("Returning cached variant:", heroBannerVariantCache);
     return heroBannerVariantCache;
   }
 
   // Return default if experiment not initialized
   if (!experimentInstance) {
+    console.warn(
+      "Experiment instance not initialized, returning default variant",
+    );
     return "control_50off";
   }
 
   try {
     // Get variant from experiment SDK
+    console.log("Fetching variant for: teste-a-b-banner-50-100-off");
     const variant = experimentInstance.variant(
       "teste-a-b-banner-50-100-off",
     );
+
+    console.log("Variant result:", variant);
+
     if (variant && variant.key) {
       heroBannerVariantCache = variant.key;
+      console.log("Banner variant assigned:", variant.key);
       return variant.key;
+    } else {
+      console.warn("No variant key found in response");
     }
   } catch (error) {
     console.error("Erro ao obter variante do banner:", error);
   }
 
+  console.log("Returning default variant: control_50off");
   return "control_50off";
 };
 
