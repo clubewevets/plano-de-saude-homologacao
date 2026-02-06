@@ -3145,7 +3145,7 @@ export default function Index() {
               {/* Primary CTA Button */}
               <a
                 id="btn-proteja-seu-pet-contratar"
-                href="https://planowevets.com.br/login"
+                href="https://planowevets-hom.sydle.com/login"
                 onClick={() => {
                   analyticsEvents.clickProtejaContrataAgora();
                   analyticsEvents.clickHirePlan("hero");
