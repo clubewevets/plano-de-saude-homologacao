@@ -76,10 +76,17 @@ export const useAmplitude = () => {
 
         // Inicializar Amplitude Experiment
         try {
+          console.log("🔴 Inicializando Experiment com:", {
+            deploymentKey: AMPLITUDE_DEPLOYMENT_KEY,
+            deviceId: storedDeviceId,
+          });
+
           experiment = Experiment.initialize(
             AMPLITUDE_DEPLOYMENT_KEY,
             storedDeviceId
           );
+
+          console.log("🟢 Experiment inicializado:", experiment);
 
           // Pré-carregar feature flags
           if (
@@ -87,12 +94,16 @@ export const useAmplitude = () => {
             typeof experiment.fetch === "function"
           ) {
             try {
+              console.log("🔵 Chamando experiment.fetch()");
               await experiment.fetch();
+              console.log("🟢 Feature flags carregadas com sucesso");
 
               // Armazenar variante em cache assim que carregar
               const variant = experiment!.variant(
                 "teste-a-b-banner-50-100-off"
               );
+              console.log("🔵 Variante obtida:", variant);
+
               if (variant) {
                 let variantName: any = variant;
                 if (
@@ -107,14 +118,17 @@ export const useAmplitude = () => {
                   variantName === "treatment_100off"
                 ) {
                   variantCache["teste-a-b-banner-50-100-off"] = variantName;
+                  console.log("✅ Variante em cache:", variantName);
                 }
               }
             } catch (fetchError) {
-              // Silencioso se falhar
+              console.error("❌ Erro ao fazer fetch:", fetchError);
             }
+          } else {
+            console.error("❌ Experiment não tem método fetch");
           }
         } catch (expError) {
-          // Silencioso se falhar
+          console.error("❌ Erro ao inicializar Experiment:", expError);
         }
 
         amplitude.track("user_properties", {
