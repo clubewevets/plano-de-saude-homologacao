@@ -312,7 +312,9 @@ export default function Index() {
   };
 
   return (
-    <div className="min-h-screen bg-white font-sans">
+    <>
+      <ExperimentDebug />
+      <div className="min-h-screen bg-white font-sans">
       {/* Header - Mobile */}
       <header className="md:hidden sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
         <div className="flex justify-between items-center px-6 py-4">
@@ -3386,5 +3388,6 @@ export default function Index() {
         </svg>
       </a>
     </div>
+    </>
   );
 }
