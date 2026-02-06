@@ -335,12 +335,23 @@ export const getHeroBannerVariant = async (): Promise<
 export const trackHeroBannerVariant = (variant: string) => {
   const flagKey = "teste-a-b-banner-50-100-off";
 
+  console.log("📊 trackHeroBannerVariant chamado:", {
+    variant,
+    flagKey,
+    experimentExists: !!experiment,
+    hasExposureMethod: experiment && typeof experiment.exposure === "function",
+  });
+
   // Use native Amplitude Experiment exposure tracking
   if (experiment && typeof experiment.exposure === "function") {
     try {
+      console.log("📤 Enviando exposure para:", flagKey);
       experiment.exposure(flagKey);
+      console.log("✅ Exposure enviado com sucesso");
     } catch (error) {
-      console.error("Erro ao rastrear exposure:", error);
+      console.error("❌ Erro ao rastrear exposure:", error);
     }
+  } else {
+    console.error("❌ Experiment não disponível ou não tem método exposure");
   }
 };
