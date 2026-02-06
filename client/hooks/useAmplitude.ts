@@ -78,18 +78,42 @@ export const useAmplitude = () => {
         });
 
         // Initialize Amplitude Experiment SDK linked to Analytics
+        // Must be called AFTER amplitude.init()
         if (AMPLITUDE_EXPERIMENT_DEPLOYMENT_KEY) {
           try {
+            console.log(
+              "Initializing Amplitude Experiment with deployment key:",
+              AMPLITUDE_EXPERIMENT_DEPLOYMENT_KEY,
+            );
+
+            // Initialize returns the instance directly (not a promise)
             experimentInstance =
               Experiment.initializeWithAmplitudeAnalytics(
                 AMPLITUDE_EXPERIMENT_DEPLOYMENT_KEY,
               );
 
-            // Fetch feature flags and expose events
+            console.log("Experiment instance created, fetching variants...");
+
+            // Fetch feature flags - this returns a promise
             await experimentInstance.fetch();
+
+            console.log("Variants fetched successfully");
+
+            // Log available variants
+            const variant = experimentInstance.variant(
+              "teste-a-b-banner-50-100-off",
+            );
+            console.log(
+              "Hero banner variant assigned:",
+              variant ? variant.key : "null",
+            );
           } catch (error) {
             console.error("Erro ao inicializar Amplitude Experiment:", error);
           }
+        } else {
+          console.warn(
+            "VITE_AMPLITUDE_EXPERIMENT_DEPLOYMENT_KEY not set in environment",
+          );
         }
       } catch (error) {
         console.error("Erro ao inicializar Amplitude:", error);
