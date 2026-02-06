@@ -297,6 +297,7 @@ export const getHeroBannerVariant = async (): Promise<
     // Primeiro, tentar obter do cache
     const cachedVariant = variantCache[featureFlagName];
     if (cachedVariant) {
+      console.log("✅ Variante obtida do cache:", cachedVariant);
       return cachedVariant as "control_50off" | "treatment_100off";
     }
 
@@ -304,13 +305,16 @@ export const getHeroBannerVariant = async (): Promise<
     await new Promise((resolve) => setTimeout(resolve, 50));
 
     if (!experiment) {
+      console.log("❌ Experiment não está disponível");
       return "control_50off";
     }
 
     let variant: any;
     try {
       variant = experiment.variant(featureFlagName);
+      console.log("📌 Variante bruta:", variant);
     } catch (variantError) {
+      console.error("❌ Erro ao obter variante:", variantError);
       return "control_50off";
     }
 
@@ -320,18 +324,23 @@ export const getHeroBannerVariant = async (): Promise<
       variantName = variant.key;
     }
 
+    console.log("🎯 Nome da variante:", variantName);
+
     // Validar variante
     if (
       variantName !== "control_50off" &&
       variantName !== "treatment_100off"
     ) {
+      console.log("⚠️ Variante inválida:", variantName);
       return "control_50off";
     }
 
     // Armazenar em cache
     variantCache[featureFlagName] = variantName;
+    console.log("✅ Variante armazenada em cache:", variantName);
     return variantName as "control_50off" | "treatment_100off";
   } catch (error) {
+    console.error("❌ Erro geral em getHeroBannerVariant:", error);
     return "control_50off";
   }
 };
