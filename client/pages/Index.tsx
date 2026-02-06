@@ -17,6 +17,9 @@ import { ExperimentDebug } from "../components/ExperimentDebug";
 const Footer = lazy(() => import("../components/Footer"));
 
 export default function Index() {
+  // Initialize Amplitude tracking
+  useAmplitude();
+
   // Map imported constants to local variable names for compatibility
   const stats = STATS;
   const plans = PLANS;
