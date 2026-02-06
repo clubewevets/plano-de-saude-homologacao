@@ -841,9 +841,7 @@ export default function Index() {
                 data-teams="true"
                 style={{ color: "rgba(255, 107, 192, 1)" }}
               >
-                {heroBannerVariant === "treatment_100off"
-                  ? "2MESESOFF"
-                  : "CUIDAR50"}
+                CUIDAR50
               </span>
             </div>
           </div>
